@@ -26,7 +26,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // frontend Vite dev server
+    origin: process.env.FRONTEND_URL,
     credentials: true, // ✅ allow cookies to be sent
   })
 );
@@ -59,6 +59,4 @@ app.get("/", (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+export default app;

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import logoicon from "@/assets/images/luvowearicon.png";
 import { Link } from "react-router-dom";
 import login from "@/assets/images/login.jpg";
-import { Input, Button } from "@heroui/input";
+import { Input, Button } from "@heroui/react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { useSelector, useDispatch } from "react-redux";
 import { useSearchParams, useNavigate } from "react-router-dom";

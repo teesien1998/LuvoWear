@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import logoicon from "@/assets/images/luvowearicon.png";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import register from "@/assets/images/register.jpg";
-import { Input, Button } from "@heroui/input";
+import { Input, Button } from "@heroui/react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { setCredentials } from "@/redux/slices/authSlice";
 import { useRegisterUserMutation } from "@/redux/api/userApiSlice";

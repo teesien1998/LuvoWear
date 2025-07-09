@@ -53,8 +53,20 @@ const MyOrdersPage = () => {
                       </div>
                     </td>
                     <td className="px-4 py-4">
-                      {new Date(order.createdAt).toLocaleDateString()}{" "}
-                      {new Date(order.createdAt).toLocaleTimeString()}
+                      {new Date(order.createdAt)
+                        .toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })
+                        .replace(/,/g, "")}
+                      {" , "}
+                      {/* Removes the comma and space */}
+                      {new Date(order.createdAt).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
                     </td>
                     <td className="px-4 py-4 ">
                       {order.shippingAddress

@@ -48,7 +48,14 @@ const OrderDetailsPage = () => {
               </h3>
               <p className="text-gray-600">
                 Order Date:{" "}
-                {new Date(orderDetails.createdAt).toLocaleDateString()}
+                {new Date(orderDetails.createdAt)
+                  .toLocaleDateString("en-US", {
+                    weekday: "short",
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })
+                  .replace(/,/g, "")}
               </p>
             </div>
             <div className="flex flex-col items-start sm:items-end mt-4 sm:mt-0 space-y-2">

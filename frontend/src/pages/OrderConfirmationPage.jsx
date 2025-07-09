@@ -31,7 +31,7 @@ const OrderConfirmationPage = () => {
   ) : (
     <div className="max-w-4xl mx-auto py-10 px-6 min-h-screen">
       <h1 className="text-4xl font-bold text-center text-emerald-600 mt-5 mb-8">
-        Thank You for Your Order
+        Order Has Been Confirmed!
       </h1>
 
       {order && (

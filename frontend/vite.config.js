@@ -2,6 +2,8 @@ import path from "path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import http from "http";
+import dotenv from "dotenv";
+dotenv.config();
 
 // Create a custom agent to manage connection pooling
 const agent = new http.Agent({
@@ -21,7 +23,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: import.meta.env.VITE_BACKEND_URL,
+        target: process.env.VITE_BACKEND_URL || "http://localhost:6000",
         changeOrigin: true,
         agent: agent,
       },

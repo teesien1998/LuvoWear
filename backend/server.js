@@ -26,7 +26,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL || "http://localhost:5173", // ✅ allow requests from the frontend
     credentials: true, // ✅ allow cookies to be sent
   })
 );
@@ -59,8 +59,8 @@ app.get("/", (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-// app.listen(PORT, () => {
-//   console.log(`Server is running on http://localhost:${PORT}`);
-// });
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
 
 export default app;

@@ -70,8 +70,8 @@ const ProductContent = ({ selectedProduct }) => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto bg-white rounded-lg">
-      <div className="flex flex-col md:flex-row">
+    <div className="max-w-6xl mx-auto px-6">
+      <div className="flex flex-col md:flex-row transition-opacity ease-in duration-500 opacity-100">
         {/* Left Thumbnails */}
         <div className="hidden md:flex flex-col overscroll-y-auto space-y-4 mr-6">
           {selectedProduct.images.map((image, index) => (

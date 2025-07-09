@@ -6,6 +6,7 @@ export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl,
+    mode: "cors",
     credentials: "include",
   }),
   tagTypes: [

@@ -172,7 +172,7 @@ const LoginPage = () => {
                   ? `/register?redirect=${redirect}`
                   : "/register"
               }
-              className="text-blue-600"
+              className="text-blue-600 hover:underline"
             >
               Register
             </Link>

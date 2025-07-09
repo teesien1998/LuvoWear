@@ -73,6 +73,9 @@ const RegisterPage = () => {
       setNameStatus("danger");
       setErrorMsgName("Please fill out this field.");
       valid = false;
+    } else {
+      setNameStatus("success");
+      setErrorMsgName("");
     }
 
     // Email validation
@@ -138,6 +141,18 @@ const RegisterPage = () => {
     }
 
     return errors;
+  };
+
+  const handleNameChange = (value) => {
+    setName(value);
+
+    if (!value.trim()) {
+      setNameStatus("danger");
+      setErrorMsgName("Please fill out this field.");
+    } else {
+      setNameStatus("success");
+      setErrorMsgName("");
+    }
   };
 
   const handleEmailChange = (value) => {
@@ -222,7 +237,7 @@ const RegisterPage = () => {
               }}
               type="text"
               variant="bordered"
-              onValueChange={setName}
+              onValueChange={handleNameChange}
             />
           </div>
 
@@ -290,7 +305,7 @@ const RegisterPage = () => {
             Already have an account?{" "}
             <Link
               to={redirect !== "/" ? `/login?redirect=${redirect}` : "/login"}
-              className="text-blue-600"
+              className="text-blue-600 hover:underline"
             >
               Login
             </Link>

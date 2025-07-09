@@ -1,10 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+
 export const apiSlice = createApi({
-  reducerPath: "api", // shared across all injected endpoints
+  reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "/", // backend base path
-    credentials: "include", // 👈  allows cookie/JWT to be sent
+    baseUrl,
+    credentials: "include",
   }),
   tagTypes: [
     "Cart",
@@ -16,5 +18,5 @@ export const apiSlice = createApi({
     "Checkout",
     "Order",
   ],
-  endpoints: () => ({}), // initially empty
+  endpoints: () => ({}),
 });

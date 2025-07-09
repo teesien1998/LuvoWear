@@ -24,7 +24,7 @@ const OrderDetailsPage = () => {
   console.log(orderDetails);
 
   return (
-    <div className="max-w-7xl mx-auto p-4 sm:p-6">
+    <div className="max-w-7xl mx-auto px-6 py-10 min-h-screen">
       <div className="flex space-x-2 items-center mb-6">
         <h2 className="text-2xl uppercase font-bold">Order Details</h2>
         <p className="w-12 bg-custom h-[2px]"></p>
@@ -33,7 +33,7 @@ const OrderDetailsPage = () => {
       {isLoading ? (
         <Spinner
           color="primary"
-          className="flex justify-center items-center h-40"
+          className="flex justify-center items-center h-40 mt-32"
           classNames={{ wrapper: "w-20 h-20" }}
         />
       ) : !orderDetails ? (

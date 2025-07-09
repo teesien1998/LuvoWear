@@ -13,7 +13,7 @@ import subscribeRoutes from "./routes/subscribeRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import adminProductRoutes from "./routes/adminProductRoutes.js";
 import adminOrderRoutes from "./routes/adminOrderRoutes.js";
-import { notFound, errorHandler } from "./middleware/errormiddleware.js";
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
 
@@ -58,5 +58,9 @@ app.get("/", (req, res) => {
 // Error handling middleware
 app.use(notFound);
 app.use(errorHandler);
+
+// app.listen(PORT, () => {
+//   console.log(`Server is running on http://localhost:${PORT}`);
+// });
 
 export default app;

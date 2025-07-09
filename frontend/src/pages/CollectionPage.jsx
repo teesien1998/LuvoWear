@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import FilterSidebar from "@/components/Products/FilterSideBar";
+import FilterSideBar from "@/components/Products/FilterSideBar";
 import FilterDrawer from "@/components/Products/FilterDrawer";
 import ProductListGrid from "@/components/Products/ProductListGrid";
 import SortOptions from "@/components/Products/SortOptions";
@@ -44,7 +44,7 @@ const CollectionPage = () => {
     <div className="flex flex-col lg:flex-row">
       {/* Desktop Left Sidebar */}
       <div className="hidden lg:block max-w-96 overflow-y-auto border-r min-h-screen">
-        <FilterSidebar defaultGender={filters.gender} />
+        <FilterSideBar defaultGender={filters.gender} />
       </div>
 
       {/* Main Content */}

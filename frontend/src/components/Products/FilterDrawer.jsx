@@ -7,7 +7,7 @@ import {
   Button,
   useDisclosure,
 } from "@heroui/react";
-import FilterSidebar from "@/components/Products/FilterSidebar";
+import FilterSideBar from "@/components/Products/FilterSideBar";
 import { FaFilter } from "react-icons/fa";
 
 const FilterDrawer = () => {
@@ -56,7 +56,7 @@ const FilterDrawer = () => {
         <DrawerContent>
           {(onClose) => (
             <div>
-              <FilterSidebar />
+              <FilterSideBar />
             </div>
           )}
         </DrawerContent>

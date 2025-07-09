@@ -13,7 +13,7 @@ import { FiRefreshCw } from "react-icons/fi";
 import { useDispatch } from "react-redux";
 import { setFiltersRedux, clearFiltersRedux } from "@/redux/slices/filterSlice";
 
-const FilterSidebar = ({ defaultGender }) => {
+const FilterSideBar = ({ defaultGender }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [filters, setFilters] = useState({
@@ -338,4 +338,4 @@ const FilterSidebar = ({ defaultGender }) => {
   );
 };
 
-export default FilterSidebar;
+export default FilterSideBar;

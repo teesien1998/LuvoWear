@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import FilterSidebar from "@/components/Products/FilterSidebar";
+import FilterSidebar from "@/components/Products/FilterSideBar";
 import FilterDrawer from "@/components/Products/FilterDrawer";
 import ProductListGrid from "@/components/Products/ProductListGrid";
 import SortOptions from "@/components/Products/SortOptions";

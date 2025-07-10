@@ -41,7 +41,7 @@ router.put(
     }
 
     order.status = status || order.status;
-    order.isDelivered = status === "Delivered" ? true : order.isDelivered;
+    order.isDelivered = status === "Delivered" ? true : order.isDelivered ;
     order.deliveredAt = status === "Delivered" ? Date.now() : order.deliveredAt;
     const updatedOrder = await order.save();
 

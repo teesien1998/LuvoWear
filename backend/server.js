@@ -24,6 +24,8 @@ const PORT = process.env.PORT || 8000;
 
 const app = express();
 
+console.log("✅ FRONTEND_URL (from env):", process.env.FRONTEND_URL);
+
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:5173",

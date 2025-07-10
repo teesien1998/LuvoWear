@@ -17,6 +17,7 @@ import {
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FiBox } from "react-icons/fi";
 
 const ProductManagement = () => {
   const { data: products = [], isLoading } = useFetchAdminProductsQuery();
@@ -43,7 +44,7 @@ const ProductManagement = () => {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <div>
+        {/* <div>
           <div className="flex space-x-2 items-center mb-6">
             <h2 className="text-4xl font-bold text-nowrap">
               Product Management
@@ -54,6 +55,19 @@ const ProductManagement = () => {
           <p className="text-gray-600">
             Manage and organize your product catalog
           </p>
+        </div> */}
+        <div className="flex items-center gap-5">
+          <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+            <FiBox className="w-8 h-8 text-white" />
+          </div>
+          <div>
+            <h2 className="text-4xl font-bold text-gray-900 mb-3">
+              Product Management
+            </h2>
+            <p className="text-gray-500">
+              Manage and organize your product inventory
+            </p>
+          </div>
         </div>
 
         <Link
@@ -88,7 +102,7 @@ const ProductManagement = () => {
             classNames={{ wrapper: "w-20 h-20" }}
           />
         ) : (
-          <div className="py-6">
+          <div className="my-12">
             {products.length > 0 ? (
               <Table
                 aria-label="User Management Table"

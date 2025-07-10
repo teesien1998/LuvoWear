@@ -29,7 +29,7 @@ const OrderConfirmationPage = () => {
         </div>
       ) : (
         <>
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center">
                 <IoMdCheckmarkCircleOutline className="w-12 h-12 text-emerald-600" />

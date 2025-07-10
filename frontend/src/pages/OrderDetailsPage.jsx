@@ -96,7 +96,7 @@ const OrderDetailsPage = () => {
                   className="text-yellow-600 border border-yellow-300"
                   classNames={{ content: "font-medium" }}
                 >
-                  Pending Delivery
+                  {orderDetails.status}
                 </Chip>
               )}
             </div>

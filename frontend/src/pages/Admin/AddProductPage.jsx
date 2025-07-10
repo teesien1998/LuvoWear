@@ -54,7 +54,7 @@ const AddProductPage = () => {
   const [createProduct, { isLoading: isCreatingProduct }] =
     useCreateProductMutation();
 
-  console.log(productData.brand);
+  console.log(imageFiles);
 
   // React-dropzone for image uploading
   const onDrop = (acceptedFiles) => {
@@ -685,7 +685,7 @@ const AddProductPage = () => {
         <Button
           type="submit"
           isLoading={isCreatingProduct || isUploadingImages}
-          className="w-full bg-green-500 hover:bg-green-600 text-white text-base rounded-lg mt-2"
+          className="w-full bg-green-500 hover:bg-green-600 hover:shadow-md text-white text-base rounded-lg mt-2"
         >
           {isCreatingProduct || isUploadingImages
             ? "Adding Product"

@@ -45,6 +45,8 @@ router.post(
   admin,
   upload.array("images", 5), // "images" is key in FormData
   asyncHandler(async (req, res) => {
+    console.log("Files received:", req.files);
+
     if (!req.files || req.files.length === 0) {
       res.status(400);
       throw new Error("No image files uploaded");

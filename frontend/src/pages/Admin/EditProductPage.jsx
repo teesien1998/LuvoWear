@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import { IoCloudUpload } from "react-icons/io5";
 import {
@@ -57,6 +57,9 @@ const EditProductPage = () => {
   const [imageFiles, setImageFiles] = useState([]); // for actual image FileList for backend upload
   const [removedImages, setRemovedImages] = useState([]);
 
+  // simple counter for assigning unique ids
+  const nextId = useRef(1);
+
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -92,15 +95,29 @@ const EditProductPage = () => {
     }
   }, [product]);
 
+  console.log(images);
+  console.log(imageFiles);
+
   // React-dropzone for image uploading
   const onDrop = (acceptedFiles) => {
-    const newImages = acceptedFiles.map((file) => ({
+    const startId = nextId.current;
+
+    const newImages = acceptedFiles.map((file, index) => ({
       url: URL.createObjectURL(file),
       altText: file.name,
+      id: startId + index,
     }));
 
+    // Assign unique ids to files for tracking
+    const newImagesFiles = acceptedFiles.map((file, index) => {
+      file.id = startId + index;
+      return file;
+    });
+
+    nextId.current += acceptedFiles.length; // increment nextId for future uploads
+
     setImages((prev) => [...prev, ...newImages]);
-    setImageFiles((prevFiles) => [...prevFiles, ...acceptedFiles]); // append files, not replace
+    setImageFiles((prevFiles) => [...prevFiles, ...newImagesFiles]); // append files, not replace
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -114,18 +131,18 @@ const EditProductPage = () => {
   const handleRemoveImage = (index) => {
     const imagesToRemove = images[index];
 
-    // If the removed image is an existing Cloudinary image, save its public_id
     if (imagesToRemove.public_id) {
       setRemovedImages((prevId) => [...prevId, imagesToRemove.public_id]);
     }
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
-    setImageFiles((prevFiles) => prevFiles.filter((_, i) => i !== index)); // append files, not replace
-  };
 
-  console.log(images);
-  console.log(imageFiles);
-  console.log(images.filter((img) => img.public_id));
-  // console.log(productData);
+    if (imagesToRemove.id) {
+      setImageFiles((prevFiles) =>
+        prevFiles.filter((imagesFiles) => imagesFiles.id !== imagesToRemove.id)   
+      );
+    }
+
+    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+  };
 
   const isFormValid = () => {
     if (!productData?.name?.trim()) return "Product name is required";
@@ -747,7 +764,7 @@ const EditProductPage = () => {
         <Button
           type="submit"
           isLoading={isUpdatingProduct || isUploadingImages || isDeletingImages}
-          className="w-full bg-green-500 hover:bg-green-600 text-white text-base rounded-lg mt-2"
+          className="w-full bg-green-500 hover:bg-green-600 hover:shadow-md text-white text-base rounded-lg mt-2"
         >
           {isUpdatingProduct || isUploadingImages || isDeletingImages
             ? "Updating Product"

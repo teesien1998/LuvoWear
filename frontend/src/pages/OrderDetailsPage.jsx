@@ -119,9 +119,6 @@ const OrderDetailsPage = () => {
             <div>
               <h4 className="text-lg font-semibold mb-2">Shipping Info</h4>
               <p className="text-gray-600">
-                Shipping Method: {orderDetails.shippingMethod}
-              </p>
-              <p className="text-gray-600">
                 Address:{" "}
                 {`${orderDetails.shippingAddress.address}, ${orderDetails.shippingAddress.city}, ${orderDetails.shippingAddress.state}, ${orderDetails.shippingAddress.postalCode}, ${orderDetails.shippingAddress.country}`}
               </p>

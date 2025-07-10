@@ -65,7 +65,7 @@ const OrderConfirmationPage = () => {
                         <FaCircleCheck size={18} className="ml-0.5" />
                       }
                       variant="flat"
-                      className="text-green-600 border border-green-300"
+                      className="text-green-600 bg-green-100 border border-green-300"
                       classNames={{ content: "font-medium" }}
                     >
                       {order.paymentStatus}
@@ -74,7 +74,7 @@ const OrderConfirmationPage = () => {
                     <Chip
                       color="primary"
                       variant="flat"
-                      className="text-blue-600 border border-blue-300"
+                      className="text-blue-600 bg-blue-100 border border-blue-300"
                       classNames={{ content: "font-medium" }}
                     >
                       Estimated Delivery:{" "}

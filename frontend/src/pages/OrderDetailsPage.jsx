@@ -16,6 +16,25 @@ import { useNavigate } from "react-router-dom";
 import { useFetchOrderDetailsQuery } from "@/redux/api/orderApiSlice";
 import { FaCircleCheck } from "react-icons/fa6";
 
+const getStatusColor = (status) => {
+  switch (status) {
+    case "Processing":
+      return "text-blue-600 bg-blue-100 border border-blue-300";
+    case "Packing":
+      return "text-yellow-600 bg-yellow-100 border border-yellow-300";
+    case "Shipped":
+      return "text-purple-600 bg-purple-100 border border-purple-300";
+    case "Out for Delivery":
+      return "text-orange-600 bg-orange-100 border border-orange-300";
+    case "Delivered":
+      return "text-green-600 bg-green-100 border border-green-300";
+    case "Cancelled":
+      return "text-red-600 bg-red-100 border border-red-300";
+    default:
+      return "text-gray-600 border border-gray-300";
+  }
+};
+
 const OrderDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -64,7 +83,7 @@ const OrderDetailsPage = () => {
                   color="success"
                   startContent={<FaCircleCheck size={18} className="ml-0.5" />}
                   variant="flat"
-                  className="text-green-600 border border-green-300"
+                  className="text-green-600 bg-green-100 border border-green-300"
                   classNames={{ content: "font-medium" }}
                 >
                   Paid
@@ -84,16 +103,16 @@ const OrderDetailsPage = () => {
                   color="success"
                   startContent={<FaCircleCheck size={18} className="ml-0.5" />}
                   variant="flat"
-                  className="text-green-600 border border-green-300"
+                  className="text-green-600 bg-green-100 border border-green-300"
                   classNames={{ content: "font-medium" }}
                 >
                   Delivered
                 </Chip>
               ) : (
                 <Chip
-                  color="warning"
+                  color="default"
                   variant="flat"
-                  className="text-yellow-600 border border-yellow-300"
+                  className={`${getStatusColor(orderDetails.status)}`}
                   classNames={{ content: "font-medium" }}
                 >
                   {orderDetails.status}
@@ -174,7 +193,7 @@ const OrderDetailsPage = () => {
           {/* Back to Orders Link */}
           <Button
             variant="flat"
-            className="bg-custom text-white flex items-center"
+            className="bg-custom hover:bg-customHover hover:!opacity-100 hover:shadow-md text-white flex items-center"
             onPress={() => {
               navigate("/my-orders");
             }}

@@ -7,6 +7,13 @@ import {
   TableRow,
   TableCell,
   Spinner,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+  Button,
 } from "@heroui/react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -18,27 +25,34 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { FiBox } from "react-icons/fi";
+import { useState } from "react";
 
 const ProductManagement = () => {
   const { data: products = [], isLoading } = useFetchAdminProductsQuery();
   const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [productIdToDelete, setProductIdToDelete] = useState(null);
 
-  const handleDelete = async (productId) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      try {
-        await deleteProduct(productId).unwrap();
-        toast.success("Product deleted successfully!");
-      } catch (err) {
-        console.error(
-          `Failed to delete product ${productId}: ${
-            err?.data?.message || err.message
-          }`
-        );
-        toast.error(
-          `Failed to delete product: ${err?.data?.message || "Unknown error"}`
-        );
-      }
+  const handleDelete = async () => {
+    try {
+      await deleteProduct(productIdToDelete).unwrap();
+      toast.success("Product deleted successfully!");
+      onClose();
+    } catch (err) {
+      console.error(
+        `Failed to delete product ${productIdToDelete}: ${
+          err?.data?.message || "Unknown error"
+        }`
+      );
+      toast.error(
+        `Failed to delete product: ${err?.data?.message || "Unknown error"}`
+      );
     }
+  };
+
+  const openDeleteModal = (productId) => {
+    setProductIdToDelete(productId);
+    onOpen();
   };
 
   return (
@@ -149,7 +163,7 @@ const ProductManagement = () => {
                           </Link>
                           <button
                             className="bg-red-500 hover:bg-red-600 text-white p-1 rounded active:scale-97 transition"
-                            onClick={() => handleDelete(product._id)}
+                            onClick={() => openDeleteModal(product._id)}
                           >
                             <MdDelete size={20} />
                           </button>
@@ -165,6 +179,39 @@ const ProductManagement = () => {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        size="sm"
+        classNames={{
+          closeButton:
+            "hover:bg-gray-200 hover:text-gray-900 rounded-md p-1 transition text-xl right-2 top-2",
+        }}
+      >
+        <ModalContent>
+          <ModalHeader>Confirm Deletion</ModalHeader>
+          <ModalBody>Are you sure you want to delete this product?</ModalBody>
+          <ModalFooter>
+            <Button
+              color="primary"
+              onPress={handleDelete}
+              className="font-medium"
+            >
+              Delete
+            </Button>
+            <Button
+              color="danger"
+              variant="light"
+              onPress={onClose}
+              className="font-medium"
+            >
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import ProductContent from "./ProductContent";
 import { useFetchBestSellerQuery } from "@/redux/api/productApiSlice";
 import { Spinner } from "@heroui/spinner";
+import { motion } from "framer-motion";
 
 const ProductHighlight = () => {
   const {
@@ -10,7 +11,13 @@ const ProductHighlight = () => {
   } = useFetchBestSellerQuery();
 
   return (
-    <section id="best-seller" className="container mx-auto px-6 py-10">
+    <motion.section
+      initial={{ y: 100, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, delay: 0.4 }}
+      id="best-seller"
+      className="container mx-auto px-6 py-10"
+    >
       <div className="flex space-x-2 items-center mb-10">
         <h2 className="text-3xl font-bold text-nowrap">Best Sellers</h2>
         <p className="w-20 bg-custom h-[2px]"></p>
@@ -22,7 +29,7 @@ const ProductHighlight = () => {
       ) : (
         <ProductContent selectedProduct={selectedProduct} />
       )}
-    </section>
+    </motion.section>
   );
 };
 

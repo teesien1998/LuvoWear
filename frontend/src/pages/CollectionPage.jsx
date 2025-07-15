@@ -4,7 +4,7 @@ import FilterDrawer from "@/components/Products/FilterDrawer";
 import ProductListGrid from "@/components/Products/ProductListGrid";
 import SortOptions from "@/components/Products/SortOptions";
 import { Spinner } from "@heroui/spinner";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { useFetchProductsByFiltersQuery } from "@/redux/api/productApiSlice";
 import NoResults from "@/components/Products/NoResults";
 
@@ -24,6 +24,10 @@ const parseFiltersFromParams = (params) => ({
 
 const CollectionPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+
+  const searchParams1 = new URLSearchParams(location.search);
+  const redirect = searchParams1.get("gender") || "/";
 
   // Parse filters from URL, useMemo to avoid re-parsing filters on every render
   const filters = useMemo(

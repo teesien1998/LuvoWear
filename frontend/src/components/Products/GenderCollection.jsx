@@ -3,11 +3,17 @@ import womenCollectionImage from "@/assets/images/women_collection.webp";
 import kidsCollectionImage from "@/assets/images/kids_collection.webp";
 import { Link } from "react-router-dom";
 import { IoIosArrowForward } from "react-icons/io";
+import { motion } from "framer-motion";
 
 const GenderCollection = () => {
   return (
-    <section id="gender-collection" className="">
-      <div className="container mx-auto px-6 py-16">
+    <section id="gender-collection">
+      <motion.div
+        initial={{ y: 100, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+        className="container mx-auto px-6 py-16"
+      >
         <div className="flex space-x-2 items-center mb-10">
           <h2 className="text-3xl font-bold text-nowrap">Collections</h2>
           <p className="w-20 bg-custom h-[2px]"></p>
@@ -63,7 +69,7 @@ const GenderCollection = () => {
             <div className="absolute top-0 bottom-0 right-0 left-0 bg-gradient-to-b from-transparent to-black opacity-60"></div>
           </Link>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

@@ -4,6 +4,7 @@ import Cart from "../models/Cart.js";
 import Order from "../models/Order.js";
 import { protect } from "../middleware/authMiddleware.js";
 import asyncHandler from "../middleware/asyncHandler.js";
+import { inngest } from "../inngest/index.js"; // Import Inngest client and functions
 
 const router = express.Router();
 
@@ -94,6 +95,11 @@ router.put(
         paymentStatus: "Paid",
         paymentDetails: checkout.paymentDetails,
         isDelivered: false,
+      });
+
+      await inngest.send({
+        name: "order/created",
+        data: { orderId: finalOrder._id },
       });
 
       // Mark the checkout as finalized

@@ -28,7 +28,7 @@ import {
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { HiUsers } from "react-icons/hi2";
-import { IoMdAddCircleOutline } from "react-icons/io";
+import { IoMdAddCircleOutline, IoMdEye, IoMdEyeOff } from "react-icons/io";
 
 const UserManagement = () => {
   // Add New User Default Form
@@ -42,23 +42,71 @@ const UserManagement = () => {
   const [editMode, setEditMode] = useState(false);
   const [editingUserId, setEditingUserId] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [errorMsgName, setErrorMsgName] = useState("");
+  const [errorMsgEmail, setErrorMsgEmail] = useState("");
+  const [errorMsgPassword, setErrorMsgPassword] = useState([]);
+  const [nameStatus, setNameStatus] = useState("default");
+  const [emailStatus, setEmailStatus] = useState("default");
+  const [passwordStatus, setPasswordStatus] = useState("default");
 
   const { data: users, isLoading, error } = useFetchUsersQuery();
   const [addUser, { isLoading: isAdding }] = useAddUserMutation();
   const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
-  const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [userIdToDelete, setUserIdToDelete] = useState(null);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    let valid = true;
+
+    // Name validation (if you want custom error for Name too)
+    if (!formData.name.trim()) {
+      setNameStatus("danger");
+      setErrorMsgName("Please fill out this field.");
+      valid = false;
+    } else {
+      setNameStatus("success");
+      setErrorMsgName("");
+    }
+
+    // Email validation
+    if (!formData.email.trim()) {
+      setEmailStatus("danger");
+      setErrorMsgEmail("Please fill out this field.");
+      valid = false;
+    } else if (!validateEmail(formData.email)) {
+      setEmailStatus("danger");
+      setErrorMsgEmail("Please enter a valid email.");
+      valid = false;
+    } else {
+      setEmailStatus("success");
+      setErrorMsgEmail("");
+    }
+
+    // Password validation
+    if (!editMode) {
+      const passwordErrors = validatePassword(formData.password);
+      if (!formData.password.trim()) {
+        setPasswordStatus("danger");
+        setErrorMsgPassword(["Please fill out this field."]);
+        valid = false;
+      } else if (passwordErrors.length > 0) {
+        setPasswordStatus("danger");
+        setErrorMsgPassword(passwordErrors);
+        valid = false;
+      } else {
+        setPasswordStatus("success");
+        setErrorMsgPassword([]);
+      }
+    }
+
+    if (!valid) return;
 
     try {
       if (editMode) {
@@ -86,6 +134,14 @@ const UserManagement = () => {
       setEditMode(false);
       setEditingUserId(null);
       setShowForm(false);
+
+      // Reset status and error messages
+      setNameStatus("default");
+      setEmailStatus("default");
+      setPasswordStatus("default");
+      setErrorMsgName("");
+      setErrorMsgEmail("");
+      setErrorMsgPassword([]);
     } catch (error) {
       const action = editMode ? "update" : "add";
       console.error(
@@ -96,6 +152,78 @@ const UserManagement = () => {
       );
     }
   };
+
+  // Email validation regex
+  const validateEmail = (value) => {
+    return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value);
+  };
+
+  // Password validation logic
+  const validatePassword = (value) => {
+    const errors = [];
+
+    if (value.length < 6) {
+      errors.push("Password must be 6 characters or more.");
+    }
+    if (!/[A-Z]/.test(value)) {
+      errors.push("Must include at least 1 uppercase letter.");
+    }
+    if (!/[^a-zA-Z0-9]/.test(value)) {
+      errors.push("Must include at least 1 special character.");
+    }
+
+    return errors;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+
+    if (name === "name") {
+      if (!value.trim()) {
+        setNameStatus("danger");
+        setErrorMsgName("Please fill out this field.");
+      } else {
+        setNameStatus("success");
+        setErrorMsgName("");
+      }
+    }
+
+    if (name === "email") {
+      if (!value.trim()) {
+        setEmailStatus("danger");
+        setErrorMsgEmail("Please fill out this field.");
+      } else if (!validateEmail(value)) {
+        setEmailStatus("danger");
+        setErrorMsgEmail("Please enter a valid email.");
+      } else {
+        setEmailStatus("success");
+        setErrorMsgEmail("");
+      }
+    }
+
+    if (name === "password") {
+      if (!editMode) {
+        const passwordErrors = validatePassword(value);
+        if (!value.trim()) {
+          setPasswordStatus("danger");
+          setErrorMsgPassword(["Please fill out this field."]);
+        } else if (passwordErrors.length > 0) {
+          setPasswordStatus("danger");
+          setErrorMsgPassword(passwordErrors);
+        } else {
+          setPasswordStatus("success");
+          setErrorMsgPassword([]);
+        }
+      }
+    }
+  };
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
 
   const handleRoleChange = async (userId, newRole) => {
     try {
@@ -124,25 +252,37 @@ const UserManagement = () => {
       password: "", // optional: usually you don't autofill password
       role: user.role,
     });
+    setShowForm(true);
     setEditMode(true);
     setEditingUserId(user._id);
-    setShowForm(true);
+
+    // Reset status and error messages
+    setNameStatus("default");
+    setEmailStatus("default");
+    setPasswordStatus("default");
+    setErrorMsgName("");
+    setErrorMsgEmail("");
+    setErrorMsgPassword([]);
   };
 
-  const handleDeleteUser = async (userId) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      try {
-        await deleteUser(userId).unwrap();
-        toast.success("User deleted successfully!");
-      } catch (err) {
-        console.error(
-          `Failed to delete user: ${err?.data?.message || "Unknown error"}`
-        );
-        toast.error(
-          `Failed to delete user: ${err?.data?.message || "Unknown error"}`
-        );
-      }
+  const handleDeleteUser = async () => {
+    try {
+      await deleteUser(userIdToDelete).unwrap();
+      toast.success("User deleted successfully!");
+      onClose();
+    } catch (err) {
+      console.error(
+        `Failed to delete user: ${err?.data?.message || "Unknown error"}`
+      );
+      toast.error(
+        `Failed to delete user: ${err?.data?.message || "Unknown error"}`
+      );
     }
+  };
+
+  const openDeleteModal = (userId) => {
+    setUserIdToDelete(userId);
+    onOpen();
   };
 
   const handleCancel = () => {
@@ -158,14 +298,14 @@ const UserManagement = () => {
   };
 
   const handleAddNew = () => {
-    setShowForm(true);
-    setEditMode(false);
     setFormData({
       name: "",
       email: "",
       password: "",
       role: "customer",
     });
+    setShowForm(true);
+    setEditMode(false);
   };
 
   return (
@@ -205,11 +345,14 @@ const UserManagement = () => {
             {editMode ? "Edit User" : "Add New User"}
           </h3>
 
-          <form onSubmit={handleSubmit}>
+          <form noValidate onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Input
+                  color={nameStatus}
+                  errorMessage={errorMsgName}
                   isRequired
+                  isInvalid={nameStatus === "danger"}
                   key="outside"
                   variant="bordered"
                   label="Name"
@@ -227,7 +370,10 @@ const UserManagement = () => {
 
               <div>
                 <Input
+                  color={emailStatus}
+                  errorMessage={errorMsgEmail}
                   isRequired
+                  isInvalid={emailStatus === "danger"}
                   variant="bordered"
                   label="Email"
                   labelPlacement="inside"
@@ -244,11 +390,34 @@ const UserManagement = () => {
 
               <div>
                 <Input
+                  endContent={
+                    <button
+                      aria-label="toggle password visibility"
+                      className="focus:outline-none mb-1"
+                      type="button"
+                      onClick={toggleVisibility}
+                    >
+                      {isVisible ? (
+                        <IoMdEyeOff className="text-2xl text-default-400 pointer-events-none" />
+                      ) : (
+                        <IoMdEye className="text-2xl text-default-400 pointer-events-none" />
+                      )}
+                    </button>
+                  }
+                  color={passwordStatus}
+                  errorMessage={() => (
+                    <ul>
+                      {errorMsgPassword.map((error, i) => (
+                        <li key={i}>{error}</li>
+                      ))}
+                    </ul>
+                  )}
                   isRequired={!editMode}
+                  isInvalid={passwordStatus === "danger"}
                   variant="bordered"
                   label="Password"
                   labelPlacement="inside"
-                  type="password"
+                  type={isVisible ? "text" : "password"}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
@@ -388,7 +557,7 @@ const UserManagement = () => {
                           </button>
                           <button
                             className="bg-red-500 hover:bg-red-600 text-white p-1 rounded active:scale-97 transition"
-                            onClick={() => handleDeleteUser(user._id)}
+                            onClick={() => openDeleteModal(user._id)}
                           >
                             <MdDelete size={20} />
                           </button>
@@ -404,6 +573,39 @@ const UserManagement = () => {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        size="sm"
+        classNames={{
+          closeButton:
+            "hover:bg-gray-200 hover:text-gray-900 rounded-md p-1 transition text-xl right-2 top-2",
+        }}
+      >
+        <ModalContent>
+          <ModalHeader>Confirm Deletion</ModalHeader>
+          <ModalBody>Are you sure you want to delete this user?</ModalBody>
+          <ModalFooter>
+            <Button
+              color="primary"
+              onPress={handleDeleteUser}
+              className="font-medium"
+            >
+              Delete
+            </Button>
+            <Button
+              color="danger"
+              variant="light"
+              onPress={onClose}
+              className="font-medium"
+            >
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

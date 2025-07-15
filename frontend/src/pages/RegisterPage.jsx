@@ -28,7 +28,6 @@ const RegisterPage = () => {
 
   const dispatch = useDispatch();
   const { user, guestId } = useSelector((state) => state.auth);
-  const { cart } = useSelector((state) => state.cart);
 
   // const userId = user ? user._id : null;
 
@@ -109,11 +108,11 @@ const RegisterPage = () => {
 
     if (!valid) return;
 
-    console.log("Submitted");
+    // console.log("Submitted");
     try {
       const res = registerUser({ name, email, password }).unwrap();
       dispatch(setCredentials(res.user));
-      // navigate(redirect);
+      navigate(redirect);
       // console.log("User Registered", { name, email, password });
     } catch (err) {
       console.error(`Register failed: ${err?.data?.message || "Unknow error"}`);
@@ -157,8 +156,6 @@ const RegisterPage = () => {
 
   const handleEmailChange = (value) => {
     setEmail(value);
-    // setEmailStatus("default"); // Reset while typing
-    // clearTimeout(emailTimeoutRef.current);
 
     if (!value.trim()) {
       setEmailStatus("danger");
@@ -172,17 +169,10 @@ const RegisterPage = () => {
       setEmailStatus("success");
       setErrorMsgEmail("");
     }
-
-    // emailTimeoutRef.current = setTimeout(() => {
-    //   if (!value) return setEmailStatus("default");
-    //   setEmailStatus(validateEmail(value) ? "success" : "danger");
-    // }, 1000);
   };
 
   const handlePasswordChange = (value) => {
     setPassword(value);
-    // setPasswordStatus("default"); // Reset while typing
-    // clearTimeout(passwordTimeoutRef.current);
 
     if (!value.trim()) {
       setPasswordStatus("danger");
@@ -198,12 +188,6 @@ const RegisterPage = () => {
       setPasswordStatus("success");
       setErrorMsgPassword([]);
     }
-    // passwordTimeoutRef.current = setTimeout(() => {
-    //   if (!value) return setPasswordStatus("default");
-    //   const errors = validatePassword(value);
-    //   setErrorMsgPassword(errors);
-    //   setPasswordStatus(errors.length > 0 ? "danger" : "success");
-    // }, 1000);
   };
 
   return (

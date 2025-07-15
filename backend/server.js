@@ -14,6 +14,8 @@ import adminRoutes from "./routes/adminRoutes.js";
 import adminProductRoutes from "./routes/adminProductRoutes.js";
 import adminOrderRoutes from "./routes/adminOrderRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
+import { serve } from "inngest/express";
+import { inngest, functions } from "./inngest/index.js";
 
 dotenv.config();
 
@@ -55,6 +57,9 @@ app.use("/api/subscribe", subscribeRoutes);
 app.use("/api/admin/users", adminRoutes);
 app.use("/api/admin/products", adminProductRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
+
+// Inngest integration endpoint
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 app.get("/", (req, res) => {
   res.send("WELCOME TO LUVOWEAR API!");

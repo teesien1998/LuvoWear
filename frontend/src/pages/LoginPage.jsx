@@ -24,7 +24,6 @@ const LoginPage = () => {
 
   const dispatch = useDispatch();
   const { user, guestId } = useSelector((state) => state.auth);
-  const { cart } = useSelector((state) => state.cart);
 
   // const userId = user ? user._id : null;
 
@@ -66,8 +65,8 @@ const LoginPage = () => {
       dispatch(setCredentials(res.user)); // store in Redux + localStorage
       // navigate(redirect);
     } catch (err) {
-      console.error(`Login failed: ${err?.data?.message || "Unknow error"}`);
-      toast.error(`Login failed: ${err?.data?.message || "Unknow error"}`);
+      console.error(`Login failed: ${err?.data?.message || "Unknown error"}`);
+      toast.error(`Login failed: ${err?.data?.message || "Unknown error"}`);
     }
   };
 

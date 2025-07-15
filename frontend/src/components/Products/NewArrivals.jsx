@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 // import { newArrivals } from "@/data/homeProductData";
 import { useFetchNewArrivalsQuery } from "@/redux/api/productApiSlice";
 import { Spinner } from "@heroui/spinner";
+import { motion } from "framer-motion";
 
 const NewArrivals = () => {
   const scrollRef = useRef(null);
@@ -90,7 +91,12 @@ const NewArrivals = () => {
 
   return (
     <section id="new-arrivals">
-      <div className="container mx-auto px-6 py-10 relative">
+      <motion.div
+        initial={{ y: 100, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+        className="container mx-auto px-6 py-10 relative"
+      >
         <div className="flex space-x-2 items-center mb-10">
           <h2 className="text-3xl font-bold text-nowrap">
             Explore New Arrivals
@@ -182,7 +188,7 @@ const NewArrivals = () => {
         >
           <FiChevronRight className="text-2xl" />
         </button>
-      </div>
+      </motion.div>
     </section>
   );
 };

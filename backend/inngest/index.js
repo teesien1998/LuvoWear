@@ -104,4 +104,121 @@ const orderCreatedEmail = inngest.createFunction(
   }
 );
 
-export const functions = [orderCreatedEmail];
+const orderDeliveredEmail = inngest.createFunction(
+  { id: "order-delivered-email" },
+  { event: "order/delivered" },
+
+  async ({ event }) => {
+    const { orderId } = event.data;
+    const order = await Order.findById(orderId).populate("user", "name email");
+
+    if (!order) {
+      console.error(`Order not found: ${orderId}`);
+      throw new Error(`Order ${orderId} not found`);
+    }
+
+    const htmlContent = `<div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333; max-width: 600px; margin: 0 auto;">
+  <div style="text-align: center; margin-bottom: 20px;">
+    <img src="https://res.cloudinary.com/dzzwpscr0/image/upload/v1752256705/luvowear_icon_mhssvg.png" 
+         alt="LuvoWear Logo" 
+         style="width: 150px; height: auto;" />
+  </div>
+
+  <h2 style="margin-bottom: 20px;">Hi {{name}},</h2>
+
+  <p style="margin-bottom: 15px; font-weight: 500; font-size: 17px;">Your order has been successfully delivered! 🎉</p>
+
+  <table style="border-collapse: collapse; width: 100%; margin: 20px 0; border: 1px solid #ddd;">
+    <tr style="background-color: #f9f9f9;">
+      <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Order ID:</td>
+      <td style="padding: 12px; border: 1px solid #ddd;">#{{orderId}}</td>
+    </tr>
+    <tr>
+      <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Delivered Date:</td>
+      <td style="padding: 12px; border: 1px solid #ddd;">${deliveredDate}</td>
+    </tr>
+    <tr style="background-color: #f9f9f9;">
+      <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Total Amount:</td>
+      <td style="padding: 12px; border: 1px solid #ddd; font-size: 18px; font-weight: bold;">$ {{totalPrice}}</td>
+    </tr>
+  </table>
+
+  <div style="background-color: #e7ffe9; padding: 15px 20px; border-radius: 5px; margin: 20px 0;">
+    <strong>We hope you love your order!</strong><br>
+    <p style="margin: 8px 0;">
+      If you have any feedback or questions, feel free to reach out to our support team anytime.
+    </p>
+  </div>
+
+  <p style="margin-top: 30px;">
+    Thank you for choosing <strong style="color: #09b6c8;">LuvoWear</strong>.<br>
+    We look forward to serving you again!
+  </p>
+
+  <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+
+  <p style="font-size: 12px; color: #666; text-align: center;">
+    This email is regarding your recent delivery. For assistance, contact support.
+  </p>
+</div>
+`;
+    const deliveredDate = new Date(order.deliveredAt).toLocaleDateString();
+
+    const html = `<div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333; max-width: 600px; margin: 0 auto;">
+  <div style="text-align: center; margin-bottom: 20px;">
+    <img src="https://res.cloudinary.com/dzzwpscr0/image/upload/v1752256705/luvowear_icon_mhssvg.png" 
+         alt="LuvoWear Logo" 
+         style="width: 150px; height: auto;" />
+  </div>
+
+  <h2 style="margin-bottom: 20px;">Hi ${order.user.name},</h2>
+
+  <p style="margin-bottom: 15px; font-weight: 500; font-size: 17px;">Your order has been successfully delivered! 🎉</p>
+
+  <table style="border-collapse: collapse; width: 100%; margin: 20px 0; border: 1px solid #ddd;">
+    <tr style="background-color: #f9f9f9;">
+      <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Order ID:</td>
+      <td style="padding: 12px; border: 1px solid #ddd;">#${order._id}</td>
+    </tr>
+    <tr>
+      <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Delivered Date:</td>
+      <td style="padding: 12px; border: 1px solid #ddd;">{{deliveredDate}}</td>
+    </tr>
+    <tr style="background-color: #f9f9f9;">
+      <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Total Amount:</td>
+      <td style="padding: 12px; border: 1px solid #ddd; font-size: 18px; font-weight: bold;">$ ${order.totalPrice.toFixed(
+        2
+      )}</td>
+    </tr>
+  </table>
+
+  <div style="background-color: #e7ffe9; padding: 15px 20px; border-radius: 5px; margin: 20px 0;">
+    <strong>We hope you love your order!</strong><br>
+    <p style="margin: 8px 0;">
+      If you have any feedback or questions, feel free to reach out to our support team anytime.
+    </p>
+  </div>
+
+  <p style="margin-top: 30px;">
+    Thank you for choosing <strong style="color: #09b6c8;">LuvoWear</strong>.<br>
+    We look forward to serving you again!
+  </p>
+
+  <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+
+  <p style="font-size: 12px; color: #666; text-align: center;">
+    This email is regarding your recent delivery. For assistance, contact support.
+  </p>
+</div>
+`;
+
+    await transporter.sendMail({
+      from: `"LuvoWear" <${process.env.SMTP_USER}>`,
+      to: order.user.email,
+      subject: `✅ ORDER DELIVERED — #${order._id}`,
+      html,
+    });
+  }
+);
+
+export const functions = [orderCreatedEmail, orderDeliveredEmail];

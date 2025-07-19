@@ -16,23 +16,32 @@ import { useNavigate } from "react-router-dom";
 import { useFetchOrderDetailsQuery } from "@/redux/api/orderApiSlice";
 import { FaCircleCheck } from "react-icons/fa6";
 
-const getStatusColor = (status) => {
-  switch (status) {
-    case "Processing":
-      return "text-blue-600 bg-blue-100 border border-blue-300";
-    case "Packing":
-      return "text-yellow-600 bg-yellow-100 border border-yellow-300";
-    case "Shipped":
-      return "text-purple-600 bg-purple-100 border border-purple-300";
-    case "Out for Delivery":
-      return "text-orange-600 bg-orange-100 border border-orange-300";
-    case "Delivered":
-      return "text-green-600 bg-green-100 border border-green-300";
-    case "Cancelled":
-      return "text-red-600 bg-red-100 border border-red-300";
-    default:
-      return "text-gray-600 border border-gray-300";
-  }
+// const getStatusColor = (status) => {
+//   switch (status) {
+//     case "Processing":
+//       return "text-blue-600 bg-blue-100 border border-blue-300";
+//     case "Packing":
+//       return "text-yellow-600 bg-yellow-100 border border-yellow-300";
+//     case "Shipped":
+//       return "text-purple-600 bg-purple-100 border border-purple-300";
+//     case "Out for Delivery":
+//       return "text-orange-600 bg-orange-100 border border-orange-300";
+//     case "Delivered":
+//       return "text-green-600 bg-green-100 border border-green-300";
+//     case "Cancelled":
+//       return "text-red-600 bg-red-100 border border-red-300";
+//     default:
+//       return "text-gray-600 border border-gray-300";
+//   }
+// };
+
+const statusColor = {
+  Processing: "text-blue-600 bg-blue-100 border border-blue-300",
+  Packing: "text-yellow-600 bg-yellow-100 border border-yellow-300",
+  Shipped: "text-purple-600 bg-purple-100 border border-purple-300",
+  "Out for Delivery": "text-orange-600 bg-orange-100 border border-orange-300",
+  Delivered: "text-green-600 bg-green-100 border border-green-300",
+  Cancelled: "text-red-600 bg-red-100 border border-red-300",
 };
 
 const OrderDetailsPage = () => {
@@ -40,7 +49,7 @@ const OrderDetailsPage = () => {
   const navigate = useNavigate();
 
   const { data: orderDetails, isLoading } = useFetchOrderDetailsQuery(id);
-  console.log(orderDetails);
+  // console.log(orderDetails);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10 min-h-screen">
@@ -112,7 +121,7 @@ const OrderDetailsPage = () => {
                 <Chip
                   color="default"
                   variant="flat"
-                  className={`${getStatusColor(orderDetails.status)}`}
+                  className={`${statusColor[orderDetails.status]}`}
                   classNames={{ content: "font-medium" }}
                 >
                   {orderDetails.status}

@@ -95,6 +95,7 @@ const NewArrivals = () => {
         initial={{ y: 100, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.4 }}
+        viewport={{ once: true }}
         className="container mx-auto px-6 py-10 relative"
       >
         <div className="flex space-x-2 items-center mb-10">

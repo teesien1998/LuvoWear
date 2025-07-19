@@ -45,6 +45,15 @@ router.put(
     order.deliveredAt = status === "Delivered" ? Date.now() : order.deliveredAt;
     const updatedOrder = await order.save();
 
+    if (status === "Delivered") {
+      await inngest.send({
+        name: "order/delivered",
+        data: {
+          orderId: updatedOrder._id,
+        },
+      });
+    }
+
     res.status(200).json(updatedOrder);
   })
 );

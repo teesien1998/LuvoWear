@@ -26,9 +26,8 @@ jobs:
           push: true
           tags: lautee/luvowear-frontend:latest
           build-args: |
-            VITE_BACKEND_URL=http://3.106.252.221:8000
-            VITE_PAYPAL_CLIENT_ID=AbwCUoGWf7zPDsCJ9Wx6hLaWi9OPML1l2AZE1lWONatap_K9wCwDbwwO-ysiEn-TPiysR3qd15olR0Kf
-
+            VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}
+            VITE_PAYPAL_CLIENT_ID=${{ secrets.VITE_PAYPAL_CLIENT_ID }}
       - name: Build & Push Backend
         uses: docker/build-push-action@v6
         with:
@@ -45,11 +44,12 @@ jobs:
           script: |
             docker pull lautee/luvowear-frontend:latest
             docker pull lautee/luvowear-backend:latest
+            docker network create luvowear-net || true
 
             docker stop frontend || true
             docker rm frontend || true
-            docker run -d --name frontend -p 80:80 lautee/luvowear-frontend:latest
+            docker run -d --name frontend --network luvowear-net -p 80:80 lautee/luvowear-frontend:latest
 
             docker stop backend || true
             docker rm backend || true
-            docker run -d --name backend --env-file ./backend/.env -p 8000:8000 lautee/luvowear-backend:latest
+            docker run -d --name backend --network luvowear-net --env-file ~/backend/.env -p 8000:8000 lautee/luvowear-backend:latest

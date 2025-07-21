@@ -52,4 +52,4 @@ jobs:
 
             docker stop backend || true
             docker rm backend || true
-            docker run -d --name backend -p 8000:8000 lautee/luvowear-backend:latest
+            docker run -d --name backend --env-file ./backend/.env -p 8000:8000 lautee/luvowear-backend:latest

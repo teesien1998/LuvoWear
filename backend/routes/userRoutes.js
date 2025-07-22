@@ -12,11 +12,17 @@ const generateToken = (res, userId) => {
     expiresIn: "7d",
   });
 
+  // Determine secure & sameSite based on environment
+  const isProduction = process.env.NODE_ENV === "production";
+  const isSecure = isProduction && process.env.COOKIE_SECURE === "true";
+
+  console.log(`isSecure: ${isSecure}`);
+
   // Set JWT as HTTP-Only Cookie
   res.cookie("jwt", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: isSecure,
+    sameSite: isSecure ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 };
@@ -107,10 +113,14 @@ router.post(
 router.post(
   "/logout",
   asyncHandler(async (req, res) => {
+    // Determine secure & sameSite based on environment
+    const isProduction = process.env.NODE_ENV === "production";
+    const isSecure = isProduction && process.env.COOKIE_SECURE === "true";
+
     res.clearCookie("jwt", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: isSecure,
+      sameSite: isSecure ? "none" : "lax",
     });
     res.status(200).json({ message: "Logged out successfully" });
   })

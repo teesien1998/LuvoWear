@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCart } from "@/redux/slices/cartSlice";
 import { useAddToCartMutation } from "@/redux/api/cartApiSlice";
 import { Chip, Tooltip } from "@heroui/react";
-import { FaCircleCheck } from "react-icons/fa6";
+import { FaCircleCheck, FaFire } from "react-icons/fa6"; // Changed from FaTrophy to FaFire
 import { IoIosWarning } from "react-icons/io";
 import { Rating } from "@mui/material";
 
@@ -16,6 +16,7 @@ const ProductContent = ({ selectedProduct }) => {
 
   const stock = selectedProduct.countInStock;
   const LOW_STOCK_THRESHOLD = 10;
+  const HOT_PRODUCT_THRESHOLD = 50; // Changed from BEST_SELLER_THRESHOLD
 
   const dispatch = useDispatch();
   const { user, guestId } = useSelector((state) => state.auth);
@@ -76,7 +77,7 @@ const ProductContent = ({ selectedProduct }) => {
         <div className="hidden md:flex flex-col overscroll-y-auto space-y-4 mr-6">
           {selectedProduct.images.map((image, index) => (
             <img
-              key={index} // ✅ Added unique key
+              key={index}
               src={image.url}
               alt={image.altText || `Thumbnail ${index}`}
               className={`w-24 h-auto object-cover rounded-lg cursor-pointer border ${
@@ -88,19 +89,33 @@ const ProductContent = ({ selectedProduct }) => {
         </div>
 
         {/* Main Image */}
-        <div className="md:w-[50%] mb-4">
+        <div className="md:w-[50%] mb-4 relative">
           <img
             src={mainImage.url}
             alt={mainImage.altText}
             className="w-full aspect-[4/5.5] object-cover rounded-lg border"
           />
+          {/* HOT Badge */}
+          {selectedProduct.totalSold >= HOT_PRODUCT_THRESHOLD && (
+            <div className="absolute top-3 left-3">
+              <Chip
+                color="danger"
+                startContent={<FaFire size={14} className="ml-1" />}
+                variant="solid"
+                className="bg-gradient-to-r from-red-500 to-orange-600 "
+                classNames={{ content: "font-medium " }}
+              >
+                HOT
+              </Chip>
+            </div>
+          )}
         </div>
 
         {/* Mobile Thumbnail */}
         <div className="md:hidden flex overscroll-x-auto space-x-4 mb-4">
           {selectedProduct.images.map((image, index) => (
             <img
-              key={index} // ✅ Added unique key
+              key={index}
               src={image.url}
               alt={image.altText || `Thumbnail ${index}`}
               className={`w-24 h-auto object-cover rounded-lg cursor-pointer border ${
@@ -114,10 +129,12 @@ const ProductContent = ({ selectedProduct }) => {
         {/* Right Side */}
         <div className="md:w-[50%] md:ml-10">
           <div className="mb-6">
-            <h1 className="md:text-2xl font-medium mb-4">
-              {selectedProduct.name}
-            </h1>
-            <p className="text-gray-600 ">{selectedProduct.description}</p>
+            <div className="flex items-start justify-between mb-4">
+              <h1 className="md:text-2xl font-medium">
+                {selectedProduct.name}
+              </h1>
+            </div>
+            <p className="text-gray-600">{selectedProduct.description}</p>
           </div>
 
           <div className="mb-6">
@@ -212,15 +229,14 @@ const ProductContent = ({ selectedProduct }) => {
             </div>
           )}
 
-          {/* <p className="text-base md:text-lg text-gray-500 line-through">
-            {`$${selectedProduct.price.toLocaleString()}`}
-          </p>
-
-          {selectedProduct.discountPrice != null && (
-            <p className="text-2xl font-semibold mb-6">
-              {`$${selectedProduct.discountPrice.toLocaleString()}`}
-            </p>
-          )} */}
+          {/* Display total sold */}
+          <div className="mb-4">
+            <span className="text-sm text-gray-500">
+              {selectedProduct.totalSold > 0
+                ? `${selectedProduct.totalSold} sold`
+                : "New product"}
+            </span>
+          </div>
 
           <div className="mb-4">
             {stock > 0 ? (

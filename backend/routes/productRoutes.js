@@ -258,6 +258,11 @@ router.get(
       .sort({ rating: -1 }) // or .sort({ rating: -1 }) if based on popularity
       .limit(Number(limit));
 
+    if (!topProducts || topProducts.length === 0) {
+      res.status(404);
+      throw new Error("No products found for the specified gender");
+    }
+
     res.status(200).json(topProducts);
   })
 );

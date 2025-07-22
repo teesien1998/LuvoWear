@@ -59,12 +59,12 @@ const NewArrivals = () => {
       setCanScrollLeft(leftScrollable);
       setCanScrollRight(rightScrollable);
 
-      console.log({
-        scrollLeft: container.scrollLeft,
-        clientWidth: container.clientWidth,
-        containerScrollWidth: container.scrollWidth,
-        offSetLeft: container.offsetLeft, // the gap between the most left edge page and the scrollable container
-      });
+      // console.log({
+      //   scrollLeft: container.scrollLeft,
+      //   clientWidth: container.clientWidth,
+      //   containerScrollWidth: container.scrollWidth,
+      //   offSetLeft: container.offsetLeft, // the gap between the most left edge page and the scrollable container
+      // });
     }
   };
 

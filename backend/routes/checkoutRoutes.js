@@ -2,6 +2,7 @@ import express from "express";
 import Checkout from "../models/Checkout.js";
 import Cart from "../models/Cart.js";
 import Order from "../models/Order.js";
+import Product from "../models/Product.js";
 import { protect } from "../middleware/authMiddleware.js";
 import asyncHandler from "../middleware/asyncHandler.js";
 import { inngest } from "../inngest/index.js"; // Import Inngest client and functions
@@ -96,6 +97,15 @@ router.put(
         paymentDetails: checkout.paymentDetails,
         isDelivered: false,
       });
+
+      // Update the totalSold field for each product
+      for (const item of checkout.checkoutItems) {
+        const product = await Product.findById(item.productId); // Changed from item.product to item.productId
+        if (product) {
+          product.totalSold += item.quantity; // Changed from item.qty to item.quantity
+          await product.save();
+        }
+      }
 
       await inngest.send({
         name: "order/created",

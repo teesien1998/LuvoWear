@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Log in to Docker Hub
@@ -49,8 +49,11 @@ jobs:
 
             docker stop frontend || true
             docker rm frontend || true
-            docker run -d --name frontend --network luvowear-net -p 80:80 lautee/luvowear-frontend:latest
+            docker run -d --name frontend --network luvowear-net -p 3000:80 lautee/luvowear-frontend:latest
 
             docker stop backend || true
             docker rm backend || true
             docker run -d --name backend --network luvowear-net --env-file ~/backend/.env -p 8000:8000 lautee/luvowear-backend:latest
+
+
+

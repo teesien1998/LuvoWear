@@ -42,18 +42,20 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            docker image prune -af || true  
-            docker pull lautee/luvowear-frontend:latest
+            docker image prune -af || true    
             docker pull lautee/luvowear-backend:latest
             docker network create luvowear-net || true
-
-            docker stop frontend || true
-            docker rm frontend || true
-            docker run -d --name frontend --network luvowear-net -p 3000:80 lautee/luvowear-frontend:latest
 
             docker stop backend || true
             docker rm backend || true
             docker run -d --name backend --network luvowear-net --env-file ~/backend/.env -p 8000:8000 lautee/luvowear-backend:latest
 
 
+            docker pull lautee/luvowear-frontend:latest
+            docker create --name frontend lautee/luvowear-frontend:latest
+            docker cp frontend:/usr/share/nginx/html /tmp/frontend_build
+            docker rm frontend || true
 
+            sudo rm -rf /usr/share/nginx/html/*
+            sudo cp -r /tmp/frontend_build/* /usr/share/nginx/html/
+            sudo systemctl restart nginx

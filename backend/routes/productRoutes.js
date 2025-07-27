@@ -2,6 +2,7 @@ import express from "express";
 import Product from "../models/Product.js";
 import asyncHandler from "../middleware/asyncHandler.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
+import Order from "../models/Order.js";
 
 const router = express.Router();
 
@@ -177,7 +178,7 @@ router.get(
       query.collections = collection;
     }
     if (category && category.toLowerCase() !== "all") {
-      query.category = { $regex: `^${category.trim()}$`, $options: "i" }; // ensure exact match (e.g. "T-Shirts" only matches "T-Shirts", not "Casual T-Shirts")
+      query.category = { $regex: `^${category.trim()}`, $options: "i" }; // ensure exact match (e.g. "T-Shirts" only matches "T-Shirts", not "Casual T-Shirts")
     }
     if (gender) {
       query.gender = gender;
@@ -218,8 +219,6 @@ router.get(
         { description: { $regex: trimmedSearch, $options: "i" } },
       ];
     }
-
-    console.log(query);
 
     // Sorting
     let sort = {}; // for sorting .sort()
@@ -310,6 +309,71 @@ router.get(
       res.status(404);
       throw new Error("Product Not Found");
     }
+  })
+);
+
+// @route   POST /api/products/:id/reviews
+// @desc    Create a new review (only if the user has purchased the product)
+// @access  Private
+router.post(
+  "/:id/reviews",
+  protect,
+  asyncHandler(async (req, res) => {
+    const { rating, comment } = req.body;
+    const productId = req.params.id;
+
+    // Find the product by ID
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      res.status(404);
+      throw new Error("Product not found");
+    }
+
+    // Check if the user has purchased the product
+    const order = await Order.findOne({
+      userId: req.user._id,
+      "cartItems.productId": productId,
+      orderStatus: "confirmed",
+    });
+
+    if (!order) {
+      return res.status(403).json({
+        success: false,
+        message: "You need to purchase the product to review it",
+      });
+    }
+
+    // Check if the user has already reviewed the product
+    const alreadyReviewed = product.reviews.find(
+      (review) => review.user.toString() === req.user._id.toString()
+    );
+
+    if (alreadyReviewed) {
+      res.status(400);
+      throw new Error("You already reviewed this product");
+    }
+
+    // Create a new review
+    const review = {
+      user: req.user._id,
+      name: req.user.name,
+      rating: Number(rating),
+      comment,
+    };
+
+    // Add the review to the product
+    product.reviews.push(review);
+
+    // Update the product's rating and number of reviews
+    product.numReviews = product.reviews.length;
+    product.rating =
+      product.reviews.reduce((acc, review) => acc + review.rating, 0) /
+      product.reviews.length;
+
+    await product.save();
+
+    res.status(201).json({ message: "Review added successfully" });
   })
 );
 

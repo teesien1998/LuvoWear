@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
   Table,
@@ -15,11 +16,33 @@ import { MdOutlineAttachMoney, MdInventory } from "react-icons/md";
 import { LuFileText } from "react-icons/lu";
 
 const AdminHomePage = () => {
-  const { data, isLoading: orderIsLoading } = useFetchAllOrdersQuery();
+  const { data: orderData, isLoading: orderIsLoading } =
+    useFetchAllOrdersQuery();
   const { data: productData, isLoading: productIsLoading } =
     useFetchAdminProductsQuery();
 
-  const orders = data?.orders || [];
+  const roundToTwo = useCallback((num) => Math.round(num * 100) / 100, []);
+
+  const orders = orderData?.orders || [];
+
+  const getStatusColor = useCallback((status) => {
+    switch (status) {
+      case "Processing":
+        return "bg-blue-100 text-blue-800 border border-blue-300";
+      case "Packing":
+        return "bg-yellow-100 text-yellow-800 border border-yellow-300";
+      case "Shipped":
+        return "bg-purple-100 text-purple-800 border border-purple-300";
+      case "Out for Delivery":
+        return "bg-orange-100 text-orange-800 border border-orange-300";
+      case "Delivered":
+        return "bg-green-100 text-green-800 border border-green-300";
+      case "Cancelled":
+        return "bg-red-100 text-red-800 border border-red-300";
+      default:
+        return "bg-gray-100 text-gray-800 border border-gray-300";
+    }
+  }, []);
 
   return orderIsLoading || productIsLoading ? (
     <Spinner
@@ -41,7 +64,7 @@ const AdminHomePage = () => {
           <div>
             <h2 className="text-lg font-medium text-gray-500">Total Revenue</h2>
             <p className="text-2xl font-semibold text-gray-800">
-              ${data.totalSales}
+              ${roundToTwo(orderData.totalSales)}
             </p>
           </div>
         </div>
@@ -53,7 +76,7 @@ const AdminHomePage = () => {
           <div>
             <h2 className="text-lg font-medium text-gray-500">Total Orders</h2>
             <p className="text-2xl font-semibold text-gray-800">
-              {data.totalOrders}
+              {orderData.totalOrders}
             </p>
             <Link
               to="/admin/orders"
@@ -116,7 +139,15 @@ const AdminHomePage = () => {
                     <TableCell>
                       ${order.totalPrice.toFixed(2).toLocaleString()}
                     </TableCell>
-                    <TableCell>{order.status}</TableCell>
+                    <TableCell>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                          order.status
+                        )}`}
+                      >
+                        {order.status}
+                      </span>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

@@ -63,6 +63,16 @@ export const productApiSlice = apiSlice.injectEndpoints({
         params: data,
       }),
     }),
+    createProductReview: builder.mutation({
+      query: ({ productId, rating, comment }) => ({
+        url: `/api/products/${productId}/reviews`,
+        method: "POST",
+        body: { rating, comment },
+      }),
+      invalidatesTags: (result, error, { productId }) => [
+        { type: "Product", id: productId },
+      ],
+    }),
   }),
 });
 
@@ -73,4 +83,5 @@ export const {
   useFetchBestSellerQuery,
   useFetchSimilarProductsQuery,
   useFetchTopCollectionQuery,
+  useCreateProductReviewMutation,
 } = productApiSlice;

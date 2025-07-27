@@ -101,7 +101,7 @@ const OrderDetailsPage = () => {
                 <Chip
                   color="danger"
                   variant="flat"
-                  className="text-red-600 border border-red-300"
+                  className="text-red-600 bg-red-100 border border-red-300"
                   classNames={{ content: "font-medium" }}
                 >
                   Pending

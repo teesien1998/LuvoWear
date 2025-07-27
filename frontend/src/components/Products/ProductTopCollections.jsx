@@ -46,7 +46,7 @@ const ProductTopCollections = ({ products, gender }) => {
                   size="small"
                   readOnly
                 />
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-gray-600 font-medium">
                   ({product.rating ? product.rating.toFixed(1) : "0.0"})
                 </span>
               </div>

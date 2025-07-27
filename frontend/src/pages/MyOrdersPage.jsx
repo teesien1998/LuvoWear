@@ -77,9 +77,12 @@ const MyOrdersPage = () => {
                     <td className="px-4 py-4">${order.totalPrice}</td>
                     <td className="px-4 py-4">
                       <span
-                        className={`px-2 py-1 rounded-full text-sm font-medium text-green-600 ${
-                          order.isPaid ? "bg-green-100" : "bg-red-100"
-                        }`}
+                        className={`px-2 py-1 rounded-full text-sm font-medium 
+                         ${
+                           order.isPaid
+                             ? "text-green-600 bg-green-100"
+                             : "text-red-600 bg-red-100"
+                         }`}
                       >
                         {order.isPaid ? "Paid" : "Pending"}
                       </span>

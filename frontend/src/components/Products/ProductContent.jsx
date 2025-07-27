@@ -195,7 +195,7 @@ const ProductContent = ({ selectedProduct }) => {
                     size="medium"
                     readOnly
                   />
-                  <span className=" text-gray-600">
+                  <span className="font-medium text-gray-600">
                     (
                     {selectedProduct.rating
                       ? selectedProduct.rating.toFixed(1)
@@ -218,7 +218,7 @@ const ProductContent = ({ selectedProduct }) => {
                   size="medium"
                   readOnly
                 />
-                <span className=" text-gray-600">
+                <span className="font-medium text-gray-600">
                   (
                   {selectedProduct.rating
                     ? selectedProduct.rating.toFixed(1)

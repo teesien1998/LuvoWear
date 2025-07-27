@@ -115,8 +115,10 @@ const RegisterPage = () => {
       navigate(redirect);
       // console.log("User Registered", { name, email, password });
     } catch (err) {
-      console.error(`Register failed: ${err?.data?.message || "Unknow error"}`);
-      toast.error(`Register failed: ${err?.data?.message || "Unknow error"}`);
+      console.error(
+        `Register failed: ${err?.data?.message || "Unknown error"}`
+      );
+      toast.error(`Register failed: ${err?.data?.message || "Unknown error"}`);
     }
   };
 

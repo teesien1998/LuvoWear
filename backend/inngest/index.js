@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 // Create a client to send and receive events
 export const inngest = new Inngest({
   id: "luvowear-ecommerce",
-  eventKey: process.env.INGEST_EVENT_KEY,
+  eventKey: process.env.INNGEST_EVENT_KEY,
 });
 
 // // Define your background functions here

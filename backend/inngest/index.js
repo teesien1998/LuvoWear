@@ -20,6 +20,8 @@ export const inngest = new Inngest({
   eventKey: process.env.INNGEST_EVENT_KEY,
 });
 
+console.log("Inngest event key:", process.env.INNGEST_EVENT_KEY);
+
 // // Define your background functions here
 // const sendWelcomeEmail = inngest.createFunction(
 //   { id: "welcome-email" },

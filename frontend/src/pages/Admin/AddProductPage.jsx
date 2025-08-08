@@ -22,11 +22,11 @@ import {
 const initialState = {
   name: "",
   description: "",
-  price: null,
-  countInStock: null,
+  price: "",
+  countInStock: "",
   sku: "",
   category: "",
-  brand: "", // ❌
+  brand: "",
   // discountPrice: null,
   sizes: [],
   colors: [],
@@ -54,8 +54,9 @@ const AddProductPage = () => {
   const [createProduct, { isLoading: isCreatingProduct }] =
     useCreateProductMutation();
 
-  console.log(imageFiles);
+  // console.log(imageFiles);
 
+  console.log(typeof productData.countInStock);
   // React-dropzone for image uploading
   const onDrop = (acceptedFiles) => {
     const newImages = acceptedFiles.map((file) => ({
@@ -145,13 +146,49 @@ const AddProductPage = () => {
     // Automatically convert to number if the field expects it
     const parsedValue = ["price", "countInStock"].includes(name)
       ? value === ""
-        ? null
+        ? ""
         : Number(value)
       : value;
 
     setProductData((prevData) => ({
       ...prevData,
       [name]: parsedValue,
+    }));
+  };
+
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+
+    console.log(typeof value);
+    // If input is blank, set price to null
+    if (value === "") {
+      setProductData((prev) => ({ ...prev, price: "" }));
+      return;
+    }
+
+    // Convert to number early and validate
+    const num = Number(value);
+    if (num < 0) return; // prevent non-numeric or negative values
+
+    // Truncate to 2 decimal places (no rounding)
+    const [dollars, cents = ""] = value.split(".");
+    const trimmedCents = cents.slice(0, 2).padEnd(2, "0");
+    const finalValue = Number(`${dollars}.${trimmedCents}`);
+
+    setProductData((prev) => ({
+      ...prev,
+      price: finalValue,
+    }));
+  };
+
+  const handleCountChange = (e) => {
+    const digitsOnly = e.target.value.replace(/[^0-9]/g, "");
+    const value = digitsOnly === "" ? "" : Number(digitsOnly);
+
+    console.log(value);
+    setProductData((prev) => ({
+      ...prev,
+      countInStock: value,
     }));
   };
 
@@ -365,10 +402,12 @@ const AddProductPage = () => {
             }
             type="number"
             name="price"
+            step="0.01"
+            min="0"
             value={productData.price}
-            onChange={handleChange}
+            onChange={handlePriceChange}
             classNames={{
-              label: "text-base font-medium", // medium text size for label
+              label: "text-base font-medium",
               inputWrapper: "group-data-[focus=true]:border-custom",
               input: "text-base",
             }}
@@ -384,10 +423,12 @@ const AddProductPage = () => {
             label="Count in Stock"
             labelPlacement="outside"
             placeholder="Enter quantity in stock"
-            type="number"
+            type="text"
             name="countInStock"
+            step="1"
+            min="0"
             value={productData.countInStock}
-            onChange={handleChange}
+            onChange={handleCountChange}
             classNames={{
               label: "text-base font-medium", // medium text size for label
               inputWrapper: "group-data-[focus=true]:border-custom",

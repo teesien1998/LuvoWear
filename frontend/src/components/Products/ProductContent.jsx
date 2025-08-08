@@ -1,22 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setCart } from "@/redux/slices/cartSlice";
 import { useAddToCartMutation } from "@/redux/api/cartApiSlice";
-import { Chip, Tooltip } from "@heroui/react";
+import { Chip, Tooltip, Spinner } from "@heroui/react";
 import { FaCircleCheck, FaFire } from "react-icons/fa6"; // Changed from FaTrophy to FaFire
 import { IoIosWarning } from "react-icons/io";
 import { Rating } from "@mui/material";
 
 const ProductContent = ({ selectedProduct }) => {
-  const [mainImage, setMainImage] = useState(selectedProduct.images[0]);
+  const [mainImage, setMainImage] = useState(
+    selectedProduct?.images?.[0] || null
+  );
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
-  const stock = selectedProduct.countInStock;
-  const LOW_STOCK_THRESHOLD = 10;
-  const HOT_PRODUCT_THRESHOLD = 50; // Changed from BEST_SELLER_THRESHOLD
+  const stock = useMemo(() => selectedProduct?.countInStock, [selectedProduct]);
+
+  const LOW_STOCK_THRESHOLD = useMemo(() => 10, []);
+  const HOT_PRODUCT_THRESHOLD = useMemo(() => 50, []); // Changed from BEST_SELLER_THRESHOLD
 
   const dispatch = useDispatch();
   const { user, guestId } = useSelector((state) => state.auth);
@@ -25,7 +28,7 @@ const ProductContent = ({ selectedProduct }) => {
   // console.log(selectedProduct);
 
   useEffect(() => {
-    setMainImage(selectedProduct.images[0]);
+    setMainImage(selectedProduct?.images?.[0]);
     setSelectedSize("S");
     setSelectedColor(null);
     setQuantity(1);
@@ -75,11 +78,11 @@ const ProductContent = ({ selectedProduct }) => {
       <div className="flex flex-col md:flex-row transition-opacity ease-in duration-500 opacity-100">
         {/* Left Thumbnails */}
         <div className="hidden md:flex flex-col overscroll-y-auto space-y-4 mr-6">
-          {selectedProduct.images.map((image, index) => (
+          {selectedProduct?.images?.map((image, index) => (
             <img
               key={index}
-              src={image.url}
-              alt={image.altText || `Thumbnail ${index}`}
+              src={image?.url}
+              alt={image?.altText || `Thumbnail ${index}`}
               className={`w-24 h-auto object-cover rounded-lg cursor-pointer border ${
                 mainImage === image ? "border-2 border-custom" : ""
               } `}
@@ -91,8 +94,8 @@ const ProductContent = ({ selectedProduct }) => {
         {/* Main Image */}
         <div className="md:w-[50%] mb-4 relative">
           <img
-            src={mainImage.url}
-            alt={mainImage.altText}
+            src={mainImage?.url}
+            alt={mainImage?.altText}
             className="w-full aspect-[4/5.5] object-cover rounded-lg border"
           />
           {/* HOT Badge */}
@@ -113,11 +116,11 @@ const ProductContent = ({ selectedProduct }) => {
 
         {/* Mobile Thumbnail */}
         <div className="md:hidden flex overscroll-x-auto space-x-4 mb-4">
-          {selectedProduct.images.map((image, index) => (
+          {selectedProduct?.images?.map((image, index) => (
             <img
               key={index}
-              src={image.url}
-              alt={image.altText || `Thumbnail ${index}`}
+              src={image?.url}
+              alt={image?.altText || `Thumbnail ${index}`}
               className={`w-24 h-auto object-cover rounded-lg cursor-pointer border ${
                 mainImage === image ? "border-2 border-custom" : ""
               } `}
@@ -140,7 +143,7 @@ const ProductContent = ({ selectedProduct }) => {
           <div className="mb-6">
             <p className="text-gray-700 mb-3 font-medium">Color:</p>
             <div className="flex gap-2">
-              {selectedProduct?.colors.map((color) => (
+              {selectedProduct?.colors?.map((color) => (
                 <Tooltip content={color.name} showArrow={true} key={color.hex}>
                   <button
                     key={color.hex}
@@ -162,7 +165,7 @@ const ProductContent = ({ selectedProduct }) => {
           <div className="mb-6">
             <p className="text-gray-700 mb-3 font-medium">Size:</p>
             <div className="flex gap-2">
-              {selectedProduct.sizes.map((size) => (
+              {selectedProduct?.sizes?.map((size) => (
                 <button
                   onClick={() => setSelectedSize(size)}
                   key={size}
@@ -181,11 +184,11 @@ const ProductContent = ({ selectedProduct }) => {
           {selectedProduct.discountPrice != null ? (
             <>
               <p className="text-base md:text-lg text-gray-500 line-through">
-                {`$${selectedProduct.price.toLocaleString()}`}
+                {`$${selectedProduct?.price?.toLocaleString()}`}
               </p>
               <div className="flex items-center justify-between mb-6">
                 <p className="text-2xl font-semibold">
-                  {`$${selectedProduct.discountPrice.toLocaleString()}`}
+                  {`$${selectedProduct?.discountPrice?.toLocaleString()}`}
                 </p>
                 <div className="flex items-center gap-2">
                   <Rating
@@ -208,7 +211,8 @@ const ProductContent = ({ selectedProduct }) => {
           ) : (
             <div className="flex items-center justify-between mb-6">
               <p className="text-2xl font-semibold">
-                {`$${selectedProduct.price.toLocaleString()}`}
+                {`$${selectedProduct?.price
+                  .toLocaleString()}`}
               </p>
               <div className="flex items-center gap-2">
                 <Rating

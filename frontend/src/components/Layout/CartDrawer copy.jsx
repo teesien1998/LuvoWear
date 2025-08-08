@@ -98,7 +98,7 @@ const CartDrawer = () => {
                   </div>
                   <button
                     onClick={handleCheckout}
-                    className="w-full bg-custom text-white py-3 rounded-lg font-semibold hover:bg-cyan-600 transition"
+                    className="w-full bg-custom text-white py-3 rounded-lg font-semibold hover:bg-customHover transition"
                   >
                     Checkout
                   </button>

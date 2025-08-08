@@ -31,7 +31,7 @@ const GenderCollection = () => {
               alt="Men's Collection"
               className="w-full object-cover group-hover:scale-110 transition"
             />
-            <div className="absolute bottom-8 right-8 bg-white group-hover:bg-gray-200 p-4 flex items-center gap-2 z-50 text-lg md:text-base lg:text-lg font-bold">
+            <div className="absolute bottom-8 right-8 bg-white group-hover:bg-gray-200 p-4 flex items-center gap-2 z-20 text-lg md:text-base lg:text-lg font-bold">
               <p>Men's Collection</p>
               <IoIosArrowForward className="group-hover:translate-x-1 transition duration-150" />
             </div>

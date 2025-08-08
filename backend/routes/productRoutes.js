@@ -378,7 +378,7 @@ router.post(
 );
 
 // @route GET/api/products/similar/:id
-// @desc Retreive similar products based on the current product's gender and category
+// @desc  Retreive similar products based on the current product's gender and category
 // @access Public
 router.get(
   "/similar/:id",

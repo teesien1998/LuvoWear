@@ -155,14 +155,14 @@ const LoginPage = () => {
               onValueChange={handlePasswordChange}
             />
           </div>
-          <Button
+          <button
             isLoading={userLoading || cartLoading}
             disabled={userLoading || cartLoading}
             type="submit"
-            className="w-full bg-custom hover:bg-customHover text-white font-medium px-4 py-2 rounded-lg mt-4 transition"
+            className="w-full text-sm bg-custom hover:bg-customHover text-white font-medium px-4 py-2.5 rounded-lg mt-4 transition"
           >
             {userLoading || cartLoading ? "Logging in..." : "Login"}
-          </Button>
+          </button>
           <p className="text-sm mt-6 text-center">
             Don't have an account?{" "}
             <Link

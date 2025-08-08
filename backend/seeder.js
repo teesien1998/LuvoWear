@@ -1,4 +1,4 @@
-import mongoose, { connect } from "mongoose";
+import mongoose from "mongoose";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import Product from "./models/Product.js";
@@ -9,11 +9,11 @@ import colors from "colors";
 
 dotenv.config();
 
-connectDB();
-
 // Function to seed data
 const seedData = async (req, res) => {
   try {
+    await connectDB();
+
     // Clear existing data
     // await User.deleteMany();
     await Product.deleteMany();
@@ -33,14 +33,30 @@ const seedData = async (req, res) => {
       return { user: "6820c657c9d97bc217639180", ...product };
     });
 
-    // Insert the products into the database
+    // Insert new products into the database
     await Product.insertMany(sampleProducts);
     console.log("Product data seeded successfully".green.inverse);
-    process.exit(1);
+    process.exit(0);
   } catch (error) {
     console.error("Error seeding the data".red.inverse, `${error}`.red.inverse);
     process.exit(1);
   }
 };
 
-seedData();
+const destroyData = async () => {
+  try {
+    await connectDB();
+    await Product.deleteMany();
+    console.log("All products deleted successfully".red.inverse);
+    process.exit(0);
+  } catch (error) {
+    console.error("Error deleting data".red.inverse, `${error}`.red.inverse);
+    process.exit(1);
+  }
+};
+
+if (process.argv[2] === "-d") {
+  destroyData();
+} else {
+  seedData();
+}

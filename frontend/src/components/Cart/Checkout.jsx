@@ -55,6 +55,7 @@ const Checkout = () => {
           totalPrice: cart.totalPrice,
         }).unwrap();
 
+        console.log("Checkout created:", res);
         setCheckoutID(res._id);
       }
     } catch (err) {
@@ -81,6 +82,8 @@ const Checkout = () => {
     try {
       const res = await finalizeCheckout(checkoutID).unwrap();
       toast.success("Checkout finalized successfully");
+      console.log("Checkout finalized:", res);
+
       dispatch(clearCart());
       navigate(`/order-confirmation/${res._id}`);
     } catch (err) {

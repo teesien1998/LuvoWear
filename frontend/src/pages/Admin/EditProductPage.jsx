@@ -38,7 +38,6 @@ const initialState = {
   brand: "",
   sizes: [],
   colors: [],
-  collections: "",
   material: "",
   gender: "",
   images: [],
@@ -137,7 +136,7 @@ const EditProductPage = () => {
 
     if (imagesToRemove.id) {
       setImageFiles((prevFiles) =>
-        prevFiles.filter((imagesFiles) => imagesFiles.id !== imagesToRemove.id)   
+        prevFiles.filter((imagesFiles) => imagesFiles.id !== imagesToRemove.id)
       );
     }
 

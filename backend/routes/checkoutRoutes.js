@@ -19,6 +19,8 @@ router.post(
     const { checkoutItems, shippingAddress, paymentMethod, totalPrice } =
       req.body;
 
+    console.log("CheckoutItems", checkoutItems);
+
     if (!checkoutItems || checkoutItems.length === 0) {
       res.status(400);
       throw new Error("No items in checkout");
@@ -34,7 +36,6 @@ router.post(
       isPaid: false,
     });
 
-    console.log(`Checkout created for users: ${req.user._id}`);
     res.status(201).json(newCheckout);
   })
 );
@@ -106,6 +107,8 @@ router.put(
           await product.save();
         }
       }
+
+      console.log("FinalOrder", finalOrder);
 
       await inngest.send({
         name: "order/created",

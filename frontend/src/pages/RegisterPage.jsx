@@ -279,14 +279,14 @@ const RegisterPage = () => {
               onValueChange={handlePasswordChange}
             />
           </div>
-          <Button
+          <button   
             isLoading={registerLoading || cartLoading}
             disabled={registerLoading || cartLoading}
             type="submit"
-            className="w-full bg-custom hover:bg-customHover text-white font-medium px-4 py-2 rounded-lg mt-4 transition"
+            className="w-full text-sm bg-custom hover:bg-customHover text-white font-medium px-4 py-2.5 rounded-lg mt-4 transition"
           >
             {registerLoading || cartLoading ? "Registering in..." : "Register"}
-          </Button>
+          </button>
           <p className="text-sm mt-6 text-center">
             Already have an account?{" "}
             <Link

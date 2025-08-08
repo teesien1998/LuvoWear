@@ -47,7 +47,7 @@ const CartDrawerShadCN = () => {
             <p>Total</p>
             <p>$1250</p>
           </div>
-          <button className="w-full bg-custom text-white py-3 rounded-lg font-semibold hover:bg-cyan-600 transition">
+          <button className="w-full bg-custom text-white py-3 rounded-lg font-semibold hover:bg-customHover transition">
             Checkout
           </button>
           <p className="text-sm tracking-tighter text-gray-500 mt-2 text-center">

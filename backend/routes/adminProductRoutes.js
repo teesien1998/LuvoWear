@@ -59,6 +59,10 @@ router.post(
       sku,
     } = req.body;
 
+    price = Number(price);
+    discountPrice = Number(discountPrice);
+    countInStock = Number(countInStock);
+
     const product = new Product({
       user: req.user._id, // Reference to the admin user who created it
       name,
@@ -115,6 +119,10 @@ router.put(
       //weight,
       sku,
     } = req.body;
+
+    price = Number(price);
+    discountPrice = Number(discountPrice);
+    countInStock = Number(countInStock);
 
     // Find product by ID
     const product = await Product.findById(req.params.id);

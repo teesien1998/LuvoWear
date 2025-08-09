@@ -28,6 +28,7 @@ jobs:
           build-args: |
             VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}
             VITE_PAYPAL_CLIENT_ID=${{ secrets.VITE_PAYPAL_CLIENT_ID }}
+
       - name: Build & Push Backend
         uses: docker/build-push-action@v6
         with:
@@ -43,9 +44,9 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             docker image prune -af || true    
+
             docker pull lautee/luvowear-backend:latest
             docker network create luvowear-net || true
-
             docker stop backend || true
             docker rm backend || true
             docker run -d --name backend --network luvowear-net --env-file ~/backend/.env -p 8000:8000 lautee/luvowear-backend:latest

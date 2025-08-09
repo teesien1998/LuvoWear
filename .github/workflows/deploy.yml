@@ -52,7 +52,8 @@ jobs:
             docker run -d --name backend --network luvowear-net --env-file ~/backend/.env -p 8000:8000 lautee/luvowear-backend:latest
 
 
-            docker pull lautee/luvowear-frontend:latest
+            docker pull lautee/luvowear-frontend:latest 
+            rm -rf /tmp/frontend_build 
             docker create --name frontend lautee/luvowear-frontend:latest
             docker cp frontend:/usr/share/nginx/html /tmp/frontend_build
             docker rm frontend || true

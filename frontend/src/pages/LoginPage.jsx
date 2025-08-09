@@ -107,7 +107,7 @@ const LoginPage = () => {
           <div className="flex justify-center mb-6">
             <img src={logoicon} alt="LuvoWear" className="w-36" />
           </div>
-          <h2 className="text-2xl font-bold text-center mb-6">Logindas</h2>
+          <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
 
           <div className="flex w-full flex-wrap md:flex-nowrap gap-4 mb-4">
             <Input

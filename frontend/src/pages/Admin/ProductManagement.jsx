@@ -58,20 +58,8 @@ const ProductManagement = () => {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        {/* <div>
-          <div className="flex space-x-2 items-center mb-6">
-            <h2 className="text-4xl font-bold text-nowrap">
-              Product Management
-            </h2>
-            <p className="w-12 bg-custom h-[2px]"></p>
-          </div>
-
-          <p className="text-gray-600">
-            Manage and organize your product catalog
-          </p>
-        </div> */}
         <div className="flex items-center gap-5">
-          <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+          <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center">
             <FiBox className="w-8 h-8 text-white" />
           </div>
           <div>

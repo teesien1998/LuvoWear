@@ -26,7 +26,7 @@ import {
   useDeleteUserMutation,
 } from "@/redux/api/adminApiSlice";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { HiUsers } from "react-icons/hi2";
 import { IoMdAddCircleOutline, IoMdEye, IoMdEyeOff } from "react-icons/io";
 
@@ -312,7 +312,7 @@ const UserManagement = () => {
     <div className="max-w-7xl mx-auto p-6">
       <div className="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div className="flex items-center gap-5">
-          <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+          <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center">
             <HiUsers className="w-8 h-8 text-white" />
           </div>
           <div>
@@ -333,150 +333,152 @@ const UserManagement = () => {
       </div>
 
       {/* Add/Edit User Form */}
-      {showForm && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          transition={{ duration: 0.3 }}
-          className="bg-white border border-gray-200 rounded-xl p-6 mb-6 shadow-sm"
-        >
-          <h3 className="text-lg font-bold mb-6">
-            {editMode ? "Edit User" : "Add New User"}
-          </h3>
+      <AnimatePresence mode="wait">
+        {showForm && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="bg-white border border-gray-200 rounded-xl p-6 mb-6 shadow-sm overflow-hidden"
+          >
+            <h3 className="text-lg font-bold mb-6">
+              {editMode ? "Edit User" : "Add New User"}
+            </h3>
 
-          <form noValidate onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Input
-                  color={nameStatus}
-                  errorMessage={errorMsgName}
-                  isRequired
-                  isInvalid={nameStatus === "danger"}
-                  key="outside"
-                  variant="bordered"
-                  label="Name"
-                  labelPlacement="inside"
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  classNames={{
-                    label: "text-base font-medium",
-                    inputWrapper: "group-data-[focus=true]:border-custom",
-                  }}
-                />
+            <form noValidate onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Input
+                    color={nameStatus}
+                    errorMessage={errorMsgName}
+                    isRequired
+                    isInvalid={nameStatus === "danger"}
+                    key="outside"
+                    variant="bordered"
+                    label="Name"
+                    labelPlacement="inside"
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    classNames={{
+                      label: "text-base font-medium",
+                      inputWrapper: "group-data-[focus=true]:border-custom",
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <Input
+                    color={emailStatus}
+                    errorMessage={errorMsgEmail}
+                    isRequired
+                    isInvalid={emailStatus === "danger"}
+                    variant="bordered"
+                    label="Email"
+                    labelPlacement="inside"
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    classNames={{
+                      label: "text-base font-medium",
+                      inputWrapper: "group-data-[focus=true]:border-custom",
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <Input
+                    endContent={
+                      <button
+                        aria-label="toggle password visibility"
+                        className="focus:outline-none mb-1"
+                        type="button"
+                        onClick={toggleVisibility}
+                      >
+                        {isVisible ? (
+                          <IoMdEyeOff className="text-2xl text-default-400 pointer-events-none" />
+                        ) : (
+                          <IoMdEye className="text-2xl text-default-400 pointer-events-none" />
+                        )}
+                      </button>
+                    }
+                    color={passwordStatus}
+                    errorMessage={() => (
+                      <ul>
+                        {errorMsgPassword.map((error, i) => (
+                          <li key={i}>{error}</li>
+                        ))}
+                      </ul>
+                    )}
+                    isRequired={!editMode}
+                    isInvalid={passwordStatus === "danger"}
+                    variant="bordered"
+                    label="Password"
+                    labelPlacement="inside"
+                    type={isVisible ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    classNames={{
+                      label: "text-base font-medium",
+                      inputWrapper: "group-data-[focus=true]:border-custom",
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <Select
+                    isRequired
+                    name="role"
+                    label="Select a role"
+                    variant="bordered"
+                    selectedKeys={[formData.role]}
+                    onChange={handleChange}
+                    classNames={{
+                      label: "font-medium",
+                      trigger:
+                        "data-[open=true]:border-custom data-[focus=true]:border-custom",
+                    }}
+                    placement="bottom"
+                  >
+                    <SelectItem key="customer">Customer</SelectItem>
+                    <SelectItem key="admin">Admin</SelectItem>
+                  </Select>
+                </div>
               </div>
 
-              <div>
-                <Input
-                  color={emailStatus}
-                  errorMessage={errorMsgEmail}
-                  isRequired
-                  isInvalid={emailStatus === "danger"}
-                  variant="bordered"
-                  label="Email"
-                  labelPlacement="inside"
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  classNames={{
-                    label: "text-base font-medium",
-                    inputWrapper: "group-data-[focus=true]:border-custom",
-                  }}
-                />
-              </div>
-
-              <div>
-                <Input
-                  endContent={
-                    <button
-                      aria-label="toggle password visibility"
-                      className="focus:outline-none mb-1"
-                      type="button"
-                      onClick={toggleVisibility}
-                    >
-                      {isVisible ? (
-                        <IoMdEyeOff className="text-2xl text-default-400 pointer-events-none" />
-                      ) : (
-                        <IoMdEye className="text-2xl text-default-400 pointer-events-none" />
-                      )}
-                    </button>
-                  }
-                  color={passwordStatus}
-                  errorMessage={() => (
-                    <ul>
-                      {errorMsgPassword.map((error, i) => (
-                        <li key={i}>{error}</li>
-                      ))}
-                    </ul>
-                  )}
-                  isRequired={!editMode}
-                  isInvalid={passwordStatus === "danger"}
-                  variant="bordered"
-                  label="Password"
-                  labelPlacement="inside"
-                  type={isVisible ? "text" : "password"}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  classNames={{
-                    label: "text-base font-medium",
-                    inputWrapper: "group-data-[focus=true]:border-custom",
-                  }}
-                />
-              </div>
-
-              <div>
-                <Select
-                  isRequired
-                  name="role"
-                  label="Select a role"
-                  variant="bordered"
-                  selectedKeys={[formData.role]}
-                  onChange={handleChange}
-                  classNames={{
-                    label: "font-medium",
-                    trigger:
-                      "data-[open=true]:border-custom data-[focus=true]:border-custom",
-                  }}
-                  placement="bottom"
+              <div className="flex gap-3 mt-6">
+                <button
+                  type="submit"
+                  disabled={isAdding || isUpdating}
+                  className="bg-custom hover:bg-customHover marker:hover:shadow-md text-white px-5 py-2.5 rounded-xl active:scale-97 transition"
                 >
-                  <SelectItem key="customer">Customer</SelectItem>
-                  <SelectItem key="admin">Admin</SelectItem>
-                </Select>
+                  {isAdding || isUpdating ? (
+                    <div className="flex items-center gap-2">
+                      <Spinner size="sm" color="white" />
+                      <span>{editMode ? "Updating..." : "Adding..."}</span>
+                    </div>
+                  ) : editMode ? (
+                    "Update User"
+                  ) : (
+                    "Add User"
+                  )}
+                </button>
+                <button
+                  type="button"
+                  className="bg-red-500 hover:bg-red-500/90 hover:shadow-md text-white px-5 py-2.5 rounded-xl active:scale-97 transition"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </button>
               </div>
-            </div>
-
-            <div className="flex gap-3 mt-6">
-              <button
-                type="submit"
-                disabled={isAdding || isUpdating}
-                className="bg-custom hover:bg-customHover marker:hover:shadow-md text-white px-5 py-2.5 rounded-xl active:scale-97 transition"
-              >
-                {isAdding || isUpdating ? (
-                  <div className="flex items-center gap-2">
-                    <Spinner size="sm" color="white" />
-                    <span>{editMode ? "Updating..." : "Adding..."}</span>
-                  </div>
-                ) : editMode ? (
-                  "Update User"
-                ) : (
-                  "Add User"
-                )}
-              </button>
-              <button
-                type="button"
-                className="bg-red-500 hover:bg-red-500/90 hover:shadow-md text-white px-5 py-2.5 rounded-xl active:scale-97 transition"
-                onClick={handleCancel}
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </motion.div>
-      )}
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="relative">
         {isDeleting && (

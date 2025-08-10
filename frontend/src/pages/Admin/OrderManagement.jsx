@@ -70,7 +70,7 @@ const OrderManagement = () => {
     <div className="max-w-7xl mx-auto p-6">
       <div className="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div className="flex items-center gap-5">
-          <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+          <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-red-600 rounded-xl flex items-center justify-center">
             <HiShoppingBag className="w-8 h-8 text-white" />
           </div>
           <div>

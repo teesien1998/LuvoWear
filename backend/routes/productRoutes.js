@@ -278,7 +278,7 @@ router.get(
   })
 );
 
-// @route GET/ api/products/best-seller
+// @route GET /api/products/best-seller
 // @desc Retrieve the product with highest rating
 // @access Public
 router.get(
@@ -334,7 +334,7 @@ router.post(
     const order = await Order.findOne({
       userId: req.user._id,
       "cartItems.productId": productId,
-      orderStatus: "confirmed",
+      paymentStatus: "Paid",
     });
 
     if (!order) {

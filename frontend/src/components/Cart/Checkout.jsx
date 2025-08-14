@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import PayPalButton from "./PayPalButton";
+import StripePayment from "./StripePayment";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -11,9 +12,11 @@ import {
 } from "@/redux/api/checkoutApiSlice";
 import { Alert } from "@heroui/react";
 import { clearCart } from "@/redux/slices/cartSlice";
+import { CreditCard, DollarSign } from "lucide-react";
 
 const Checkout = () => {
   const [checkoutID, setCheckoutID] = useState();
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const [shippingAddress, setShippingAddress] = useState({
     email: "zeunesse1938@gmail.com",
     firstName: "",
@@ -46,12 +49,18 @@ const Checkout = () => {
 
   const handleCreateCheckout = async (e) => {
     e.preventDefault();
+    
+    if (!selectedPaymentMethod) {
+      toast.error("Please select a payment method");
+      return;
+    }
+    
     try {
       if (cart && cart.products && cart.products.length > 0) {
         const res = await createCheckout({
           checkoutItems: cart.products,
           shippingAddress,
-          paymentMethod: "PayPal",
+          paymentMethod: selectedPaymentMethod,
           totalPrice: cart.totalPrice,
         }).unwrap();
 
@@ -329,6 +338,46 @@ const Checkout = () => {
                 required
               />
             </div>
+            <div className="mb-6">
+              <h3 className="text-lg mb-4 font-bold">Payment Method</h3>
+              <div className="space-y-3">
+                <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="PayPal"
+                    checked={selectedPaymentMethod === "PayPal"}
+                    onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                    className="mr-3 w-4 h-4 text-custom"
+                  />
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center">
+                      <DollarSign className="w-5 h-5 mr-2 text-blue-600" />
+                      <span className="font-medium">PayPal</span>
+                    </div>
+                    <span className="text-sm text-gray-500">Fast & Secure</span>
+                  </div>
+                </label>
+                
+                <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="Stripe"
+                    checked={selectedPaymentMethod === "Stripe"}
+                    onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                    className="mr-3 w-4 h-4 text-custom"
+                  />
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center">
+                      <CreditCard className="w-5 h-5 mr-2 text-green-600" />
+                      <span className="font-medium">Credit/Debit Card</span>
+                    </div>
+                    <span className="text-sm text-gray-500">Powered by Stripe</span>
+                  </div>
+                </label>
+              </div>
+            </div>
             <div className="mt-6">
               {!checkoutID ? (
                 <button
@@ -339,12 +388,21 @@ const Checkout = () => {
                 </button>
               ) : (
                 <div>
-                  {/* Paypal Component */}
-                  <PayPalButton
-                    amount={cart.totalPrice}
-                    onSuccess={handlePaymentSuccess}
-                    onError={(err) => toast.error(err.message)}
-                  />
+                  {selectedPaymentMethod === "PayPal" ? (
+                    <PayPalButton
+                      amount={cart.totalPrice}
+                      onSuccess={handlePaymentSuccess}
+                      onError={(err) => toast.error(err.message)}
+                    />
+                  ) : selectedPaymentMethod === "Stripe" ? (
+                    <StripePayment
+                      amount={cart.totalPrice}
+                      checkoutId={checkoutID}
+                      shippingAddress={shippingAddress}
+                      onSuccess={handlePaymentSuccess}
+                      onError={(err) => toast.error(err.message || "Payment failed")}
+                    />
+                  ) : null}
                 </div>
               )}
             </div>

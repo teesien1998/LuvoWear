@@ -92,28 +92,6 @@ const Checkout = () => {
     }
   };
 
-  const [{ isPending, options }, paypalDispatch] = usePayPalScriptReducer();
-
-  // // inside Checkout component
-  // useEffect(() => {
-  //   if (checkoutID) {
-  //     paypalDispatch({
-  //       type: "resetOptions",
-  //       value: {
-  //         "client-id": import.meta.env.VITE_PAYPAL_CLIENT_ID,
-  //         currency: "USD", // ✅ Now it will update
-  //       },
-  //     });
-
-  //     paypalDispatch({
-  //       type: "setLoadingStatus",
-  //       value: "pending",
-  //     });
-  //   }
-  // }, [checkoutID, paypalDispatch]); // 🔁 triggered when checkoutID is set
-
-  // console.log(options);
-
   if (!cart || !cart?.products || cart?.products?.length === 0) {
     return (
       <>

@@ -8,8 +8,6 @@ import { useSelector } from "react-redux";
 import { Avatar } from "@heroui/react";
 import { HiOutlineUser, HiBars3BottomRight } from "react-icons/hi2";
 import { HiOutlineShoppingBag } from "react-icons/hi";
-import CartDrawerShadCN from "../Layout/CartDrawerShadCN";
-import NavDrawerShadCN from "../Layout/NavDrawerShadCN";
 
 function getInitials(name) {
   if (!name) return "";

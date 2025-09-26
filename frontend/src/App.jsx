@@ -29,7 +29,7 @@ import AdminRoute from "./components/Admin/AdminRoute";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      {/* 👤 User pages */}
+      {/* User pages */}
       <Route path="/" element={<UserLayout />}>
         <Route index element={<HomePage />} />
         <Route path="login" element={<LoginPage />} />
@@ -37,7 +37,7 @@ const router = createBrowserRouter(
         <Route path="collections" element={<CollectionPage />} />
         <Route path="product/:id" element={<ProductDetailsPage />} />
 
-        {/* 🔒 Authenticated user pages */}
+        {/* Authenticated user pages */}
         <Route element={<PrivateRoute />}>
           <Route path="profile" element={<ProfilePage />} />
           <Route path="checkout" element={<Checkout />} />
@@ -53,7 +53,7 @@ const router = createBrowserRouter(
         <Route path="*" element={<NotFoundPage />} />
       </Route>
 
-      {/* 👑 Admin pages */}
+      {/* Admin pages */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route element={<AdminRoute />}>
           <Route index element={<AdminHomePage />} />

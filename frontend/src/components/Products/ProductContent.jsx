@@ -15,6 +15,9 @@ const ProductContent = ({ selectedProduct }) => {
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [isHovering, setIsHovering] = useState(false);
+  const [lensPos, setLensPos] = useState({ x: 0, y: 0 }); // px for circle lens
+  const [zoomPos, setZoomPos] = useState({ x: 0, y: 0 }); // % for circle background zoom
 
   const stock = useMemo(() => selectedProduct?.countInStock, [selectedProduct]);
 
@@ -73,9 +76,44 @@ const ProductContent = ({ selectedProduct }) => {
     }
   };
 
+  const handleMouseMove = (e) => {
+    const { left, top, width, height } =
+      e.currentTarget.getBoundingClientRect();
+
+    // cursor position inside image (in px)
+    const positionX = e.clientX - left;
+    const positionY = e.clientY - top;
+
+    // Lens size and radius
+    const lensSize = 200; // Lens width/height in px
+    const lensRadius = lensSize / 2; // 100px - half of lens size
+
+    // Clamp lens position to keep it within bounds (accounting for lens radius)
+    // This ensures the lens doesn't overflow the edges
+    const clampedX = Math.max(
+      lensRadius, // Min: 100px from left edge
+      Math.min(positionX, width - lensRadius) // Max: width - 100px from left edge
+    );
+    const clampedY = Math.max(
+      lensRadius, // Min: 100px from top edge
+      Math.min(positionY, height - lensRadius) // Max: height - 100px from top edge
+    );
+    console.log(clampedX, clampedY);
+    console.log(positionX, positionY);
+
+    // Where to place the lens (px) - this will be centered via transform
+    setLensPos({ x: clampedX, y: clampedY });
+
+    // What part of the image to zoom into (%)
+    setZoomPos({
+      x: (positionX / width) * 100,
+      y: (positionY / height) * 100,
+    });
+  };
+
   return (
     <div className="max-w-6xl mx-auto px-6">
-      <div className="flex flex-col md:flex-row transition-opacity ease-in duration-500 opacity-100">
+      <div className="flex flex-col md:flex-row items-start justify-center transition-opacity ease-in duration-500 opacity-100">
         {/* Left Thumbnails */}
         <div className="hidden md:flex flex-col overscroll-y-auto space-y-4 mr-6">
           {selectedProduct?.images?.map((image, index) => (
@@ -92,12 +130,35 @@ const ProductContent = ({ selectedProduct }) => {
         </div>
 
         {/* Main Image */}
-        <div className="md:w-[50%] mb-4 relative">
+        <div
+          className="md:w-[50%] mb-4 relative overflow-hidden"
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+          onMouseMove={handleMouseMove}
+        >
           <img
             src={mainImage?.url}
             alt={mainImage?.altText}
             className="w-full aspect-[4/5.5] object-cover rounded-lg border"
           />
+          {isHovering && (
+            <div
+              className="absolute pointer-events-none z-10 rounded-full"
+              style={{
+                width: "200px",
+                height: "200px",
+                left: `${lensPos.x}px`,
+                top: `${lensPos.y}px`,
+                backgroundImage: `url(${mainImage?.url})`,
+                backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
+                backgroundSize: "300%",
+                backgroundRepeat: "no-repeat",
+                transform: "translate(-50%, -50%)",
+                boxShadow:
+                  "0 0 0 4px rgba(255, 255, 255, 0.85), 0 0 7px 7px rgba(0, 0, 0, 0.25), inset 0 0 40px 2px rgba(0, 0, 0, 0.25)",
+              }}
+            />
+          )}
           {/* HOT Badge */}
           {selectedProduct.totalSold >= HOT_PRODUCT_THRESHOLD && (
             <div className="absolute top-3 left-3">
@@ -211,8 +272,7 @@ const ProductContent = ({ selectedProduct }) => {
           ) : (
             <div className="flex items-center justify-between mb-6">
               <p className="text-2xl font-semibold">
-                {`$${selectedProduct?.price
-                  .toLocaleString()}`}
+                {`$${selectedProduct?.price.toLocaleString()}`}
               </p>
               <div className="flex items-center gap-2">
                 <Rating

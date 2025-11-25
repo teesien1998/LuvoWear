@@ -8,9 +8,9 @@ import { motion } from "framer-motion";
 
 const NewArrivals = () => {
   const scrollRef = useRef(null);
-  const [startX, setStartX] = useState(null);
+  const startXRef = useRef(null);
+  const scrollLeftRef = useRef(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [scrollLeft, setScrollLeft] = useState(0);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
@@ -19,24 +19,27 @@ const NewArrivals = () => {
   const { data: newArrivals, isLoading, error } = useFetchNewArrivalsQuery();
 
   const handleMouseDown = (e) => {
+    // Don't interfere with scrollbar dragging
+    // Check if scrollRef.current exists (safety check - prevents errors if ref not attached)
+    if (scrollRef.current) {
+      const rect = scrollRef.current.getBoundingClientRect();
+      // Calculate scrollbar height (for horizontal scrollbar at bottom)
+      // offsetHeight = total height including scrollbar
+      // clientHeight = visible height excluding scrollbar
+      const scrollbarHeight =
+        scrollRef.current.offsetHeight - scrollRef.current.clientHeight;
+      // Check if horizontal scrollbar exists AND if click is in the scrollbar area (bottom)
+      if (scrollbarHeight > 0 && e.clientY > rect.bottom - scrollbarHeight) {
+        // User is clicking on horizontal scrollbar, mark it and let browser handle it
+        isScrollbarDragRef.current = true;
+        return;
+      }
+    }
+
+    e.preventDefault(); // Prevent text selection and default drag behavior
     setIsDragging(false); // Reset dragging state
-    setStartX(e.pageX - scrollRef.current.offsetLeft);
-    setScrollLeft(scrollRef.current.scrollLeft);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!startX) return;
-    const x = e.pageX - scrollRef.current.offsetLeft;
-    const walk = x - startX;
-    if (Math.abs(walk) > 5) setIsDragging(true); // Detect dragging, if move
-    scrollRef.current.scrollLeft = scrollLeft - walk;
-  };
-
-  const handleMouseUporLeave = (e) => {
-    setTimeout(() => {
-      setIsDragging(false); // ✅ Ensure isDragging resets properly
-      setStartX(null);
-    }, 50);
+    startXRef.current = e.pageX - scrollRef.current.offsetLeft;
+    scrollLeftRef.current = scrollRef.current.scrollLeft;
   };
 
   // useEffect(() => {
@@ -59,16 +62,21 @@ const NewArrivals = () => {
       setCanScrollLeft(leftScrollable);
       setCanScrollRight(rightScrollable);
 
-      // console.log({
-      //   scrollLeft: container.scrollLeft,
-      //   clientWidth: container.clientWidth,
-      //   containerScrollWidth: container.scrollWidth,
-      //   offSetLeft: container.offsetLeft, // the gap between the most left edge page and the scrollable container
-      // });
+      console.log({
+        scrollLeft: container.scrollLeft,
+        clientWidth: container.clientWidth,
+        containerScrollWidth: container.scrollWidth,
+        rightScrollable: rightScrollable,
+        calculation:
+          container.scrollWidth -
+          (container.scrollLeft + container.clientWidth),
+        offSetLeft: container.offsetLeft, // the gap between the most left edge page and the scrollable container
+      });
     }
   };
 
   const handleRedirect = (id) => {
+    // Prevent navigation if user was dragging
     if (!isDragging) {
       // console.log("Navigating to:", `/product/${id}`); // ✅ Debug log
       navigate(`/product/${id}`); // ✅ Redirect
@@ -82,12 +90,61 @@ const NewArrivals = () => {
       updateScrollButton(); // ✅ Initial state check to ensure buttons are correct on mount when the component first mounts
     }
 
+    // 🔥 Cleanup function - removes listener, runs when component unmounts
     return () => {
       if (scrollRef.current) {
         scrollRef.current.removeEventListener("scroll", updateScrollButton);
       }
-    }; // 🔥 Cleanup function - removes listener, runs when component unmounts
+    };
   }, []);
+
+  // Add global mouse move listener for better drag handling
+  useEffect(() => {
+    const handleGlobalMouseMove = (e) => {
+      if (scrollRef.current && startXRef.current !== null) {
+        e.preventDefault();
+        const x = e.pageX - scrollRef.current.offsetLeft;
+        const walk = x - startXRef.current;
+        // Set dragging immediately on any movement to prevent navigation
+        if (Math.abs(walk) > 0) {
+          setIsDragging(true);
+        }
+        // Only start actual scrolling for significant movements (> 5px)
+        if (Math.abs(walk) > 5) {
+          scrollRef.current.scrollLeft = scrollLeftRef.current - walk;
+        }
+      }
+    };
+
+    const handleGlobalMouseUp = () => {
+      if (startXRef.current !== null) {
+        // Reset after a delay to allow click handler to check isDragging
+        setTimeout(() => {
+          setIsDragging(false);
+          startXRef.current = null;
+        }, 50);
+      }
+    };
+
+    document.addEventListener("mousemove", handleGlobalMouseMove);
+    document.addEventListener("mouseup", handleGlobalMouseUp);
+
+    return () => {
+      document.removeEventListener("mousemove", handleGlobalMouseMove);
+      document.removeEventListener("mouseup", handleGlobalMouseUp);
+    };
+  }, []);
+
+  // Update scroll buttons when data loads
+  useEffect(() => {
+    if (newArrivals && newArrivals.length > 0) {
+      // console.log("Data loaded, updating scroll buttons");
+      // Use setTimeout to ensure DOM is updated after data loads
+      setTimeout(() => {
+        updateScrollButton();
+      }, 100);
+    }
+  }, [newArrivals]);
 
   return (
     <section id="new-arrivals">
@@ -114,11 +171,10 @@ const NewArrivals = () => {
         {/* Scrollable Content */}
         <div
           ref={scrollRef}
-          className="overflow-x-auto flex space-x-6 relative"
+          className={`overflow-x-auto flex space-x-6 relative select-none ${
+            isDragging ? "cursor-grabbing" : "cursor-grab"
+          }`}
           onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUporLeave}
-          onMouseLeave={handleMouseUporLeave}
         >
           {newArrivals?.map((product) => (
             <div
@@ -147,8 +203,8 @@ const NewArrivals = () => {
           disabled={!canScrollLeft}
           className={`p-2 rounded-full border border-gray-300 absolute left-0 top-1/2 ${
             canScrollLeft
-              ? "bg-white text-black hover:bg-gray-100 transition duration-150"
-              : "bg-gray-200 text-gray-400 cursor-not-allowed"
+              ? "bg-white text-black hover:bg-gray-100 transition duration-150 block"
+              : "bg-gray-200 text-gray-400 hidden"
           } `}
         >
           <FiChevronLeft className="text-2xl" />
@@ -158,8 +214,8 @@ const NewArrivals = () => {
           disabled={!canScrollRight}
           className={`p-2 rounded-full border border-gray-300 absolute right-0 top-1/2 ${
             canScrollRight
-              ? "bg-white text-black hover:bg-gray-100 transition duration-150"
-              : "bg-gray-200 text-gray-400 cursor-not-allowed"
+              ? "bg-white text-black hover:bg-gray-100 transition duration-150 block"
+              : "bg-gray-200 text-gray-400 hidden"
           }`}
         >
           <FiChevronRight className="text-2xl" />

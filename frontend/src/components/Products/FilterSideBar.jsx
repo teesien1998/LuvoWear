@@ -161,19 +161,19 @@ const FilterSideBar = ({ defaultGender }) => {
   return (
     <div className="px-5 py-4">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-medium uppercase">Filters</h3>
+        <h3 className="text-lg sm:text-xl font-medium uppercase">Filters</h3>
         <button
           onClick={clearFilters}
-          className="flex items-center gap-1 text-sm text-red-500 border border-red-500 px-2 py-1 rounded hover:bg-red-50"
+          className="flex items-center gap-1 text-xs sm:text-sm text-red-500 border border-red-500 px-2 py-1 rounded hover:bg-red-50"
         >
-          <FiRefreshCw className="w-4 h-4" />
+          <FiRefreshCw className="w-3 h-3 sm:w-4 sm:h-4" />
           Reset
         </button>
       </div>
 
       {/* Category Filter */}
       <div className="mb-4 pb-4 border-b-1 border-slate-300">
-        <label className="block text-gray-800 font-medium mb-2 uppercase">
+        <label className="block text-gray-800 font-medium mb-2 uppercase text-sm sm:text-base">
           Category
         </label>
         {categories.map((category) => (
@@ -187,7 +187,7 @@ const FilterSideBar = ({ defaultGender }) => {
               onChange={handleFilterChange}
               className="mr-2 h-4 w-4 text-green-500 focus:ring-green-400 border-green-800"
             />
-            <label htmlFor={category} className="text-gray-600">
+            <label htmlFor={category} className="text-gray-600 text-sm sm:text-base">
               {category}
             </label>
           </div>
@@ -196,7 +196,7 @@ const FilterSideBar = ({ defaultGender }) => {
 
       {/* Gender Filter */}
       <div className="mb-4 pb-4 border-b-1 border-slate-300">
-        <label className="block text-gray-800 font-medium mb-2 uppercase">
+        <label className="block text-gray-800 font-medium mb-2 uppercase text-sm sm:text-base">
           Gender
         </label>
         {genders.map((gender) => (
@@ -210,7 +210,7 @@ const FilterSideBar = ({ defaultGender }) => {
               onChange={handleFilterChange}
               className="mr-2 h-4 w-4"
             />
-            <label htmlFor={gender} className="text-gray-600">
+            <label htmlFor={gender} className="text-gray-600 text-sm sm:text-base">
               {gender}
             </label>
           </div>
@@ -219,7 +219,7 @@ const FilterSideBar = ({ defaultGender }) => {
 
       {/* Color Filter */}
       <div className="mb-4 pb-4 border-b-1 border-slate-300">
-        <label className="block text-gray-800 font-medium mb-2 uppercase">
+        <label className="block text-gray-800 font-medium mb-2 uppercase text-sm sm:text-base">
           Color
         </label>
         <div className="flex flex-wrap gap-2">
@@ -244,7 +244,7 @@ const FilterSideBar = ({ defaultGender }) => {
 
       {/* Size Filter */}
       <div className="mb-4 pb-4 border-b-1 border-slate-300">
-        <label className="block text-gray-800 font-medium mb-2 uppercase">
+        <label className="block text-gray-800 font-medium mb-2 uppercase text-sm sm:text-base">
           Size
         </label>
         {sizes.map((size) => (
@@ -258,7 +258,7 @@ const FilterSideBar = ({ defaultGender }) => {
               checked={filters.size.includes(size)}
               className="mr-2 h-4 w-4 accent-red-500"
             />
-            <label htmlFor={size} className="text-gray-600">
+            <label htmlFor={size} className="text-gray-600 text-sm sm:text-base">
               {size}
             </label>
           </div>
@@ -267,7 +267,7 @@ const FilterSideBar = ({ defaultGender }) => {
 
       {/* Material Filter */}
       <div className="mb-4 pb-4 border-b-1 border-slate-300">
-        <label className="block text-gray-800 font-medium mb-2 uppercase">
+        <label className="block text-gray-800 font-medium mb-2 uppercase text-sm sm:text-base">
           Material
         </label>
         {materials.map((material) => (
@@ -281,7 +281,7 @@ const FilterSideBar = ({ defaultGender }) => {
               checked={filters.material.includes(material)}
               className="mr-2 h-4 w-4 accent-red-500"
             />
-            <label htmlFor={material} className="text-gray-600">
+            <label htmlFor={material} className="text-gray-600 text-sm sm:text-base">
               {material}
             </label>
           </div>
@@ -290,7 +290,7 @@ const FilterSideBar = ({ defaultGender }) => {
 
       {/* Brand Filter */}
       <div className="mb-4 pb-4 border-b-1 border-slate-300">
-        <label className="block text-gray-800 font-medium mb-2 uppercase">
+        <label className="block text-gray-800 font-medium mb-2 uppercase text-sm sm:text-base">
           Brand
         </label>
         {brands.map((brand) => (
@@ -304,7 +304,7 @@ const FilterSideBar = ({ defaultGender }) => {
               checked={filters.brand.includes(brand)}
               className="mr-2 h-4 w-4 accent-red-500"
             />
-            <label htmlFor={brand} className="text-gray-600">
+            <label htmlFor={brand} className="text-gray-600 text-sm sm:text-base">
               {brand}
             </label>
           </div>
@@ -324,8 +324,8 @@ const FilterSideBar = ({ defaultGender }) => {
         showTooltip={true}
         classNames={{
           label:
-            "text-base text-gray-800 font-medium mb-2 uppercase text-nowrap", // ← change size here (e.g. text-sm, text-lg, etc.)
-          value: "text-gray-600 mb-2",
+            "text-sm sm:text-base text-gray-800 font-medium mb-2 uppercase text-nowrap",
+          value: "text-xs sm:text-sm text-gray-600 mb-2",
           filler: "bg-custom", // filled portion
           thumb: "bg-custom",
         }}

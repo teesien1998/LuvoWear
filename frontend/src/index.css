@@ -17,10 +17,6 @@
   font-size: 9px !important;
 } */
 
-::-webkit-scrollbar {
-  display: none;
-}
-
 .slick-dots {
   bottom: 30px !important;
 }

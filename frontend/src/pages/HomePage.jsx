@@ -11,7 +11,6 @@ const HomePage = () => {
   const {
     data: topCollectionMen,
     isLoading: isMenCollectionLoading,
-    error: menCollectionError,
   } = useFetchTopCollectionQuery({
     gender: "Men",
   });
@@ -19,7 +18,6 @@ const HomePage = () => {
   const {
     data: topCollectionWomen,
     isLoading: isWomenCollectionLoading,
-    error: womenCollectionError,
   } = useFetchTopCollectionQuery({
     gender: "Women",
   });

@@ -11,7 +11,7 @@ import { FaBars } from "react-icons/fa";
 import AdminSideBar from "./AdminSideBar";
 
 const AdminDrawer = () => {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>

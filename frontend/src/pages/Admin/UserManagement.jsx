@@ -18,7 +18,6 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { MdDelete, MdEdit } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
 import {
   useFetchUsersQuery,
   useAddUserMutation,
@@ -26,7 +25,7 @@ import {
   useDeleteUserMutation,
 } from "@/redux/api/adminApiSlice";
 import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { HiUsers } from "react-icons/hi2";
 import { IoMdAddCircleOutline, IoMdEye, IoMdEyeOff } from "react-icons/io";
 
@@ -50,15 +49,13 @@ const UserManagement = () => {
   const [emailStatus, setEmailStatus] = useState("default");
   const [passwordStatus, setPasswordStatus] = useState("default");
 
-  const { data: users, isLoading, error } = useFetchUsersQuery();
+  const { data: users, isLoading } = useFetchUsersQuery();
   const [addUser, { isLoading: isAdding }] = useAddUserMutation();
   const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [userIdToDelete, setUserIdToDelete] = useState(null);
-
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -335,13 +332,7 @@ const UserManagement = () => {
       {/* Add/Edit User Form */}
       <AnimatePresence mode="wait">
         {showForm && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="bg-white border border-gray-200 rounded-xl p-6 mb-6 shadow-sm overflow-hidden"
-          >
+          <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6 shadow-sm overflow-hidden">
             <h3 className="text-lg font-bold mb-6">
               {editMode ? "Edit User" : "Add New User"}
             </h3>
@@ -476,24 +467,18 @@ const UserManagement = () => {
                 </button>
               </div>
             </form>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
       <div className="relative">
         {isDeleting && (
-          <motion.div
-            className="absolute inset-0 bg-gray-100 bg-opacity-50 flex flex-col justify-center items-center z-10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-          >
+          <div className="absolute inset-0 bg-gray-100 bg-opacity-50 flex flex-col justify-center items-center z-10">
             <Spinner color="primary" classNames={{ wrapper: "w-20 h-20" }} />
             <p className="text-gray-700 font-medium text-lg mt-4">
               Deleting user...
             </p>
-          </motion.div>
+          </div>
         )}
 
         {isLoading ? (

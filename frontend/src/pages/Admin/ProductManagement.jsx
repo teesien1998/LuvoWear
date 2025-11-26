@@ -23,7 +23,6 @@ import {
 } from "@/redux/api/adminProductApiSlice";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
 import { FiBox } from "react-icons/fi";
 import { useState } from "react";
 
@@ -83,18 +82,12 @@ const ProductManagement = () => {
 
       <div className="relative">
         {isDeleting && (
-          <motion.div
-            className="absolute inset-0 bg-gray-100 bg-opacity-50 flex flex-col justify-center items-center z-10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-          >
+          <div className="absolute inset-0 bg-gray-100 bg-opacity-50 flex flex-col justify-center items-center z-10">
             <Spinner color="primary" classNames={{ wrapper: "w-20 h-20" }} />
             <p className="text-gray-700 font-medium text-lg mt-4">
               Deleting product...
             </p>
-          </motion.div>
+          </div>
         )}
 
         {isLoading ? (

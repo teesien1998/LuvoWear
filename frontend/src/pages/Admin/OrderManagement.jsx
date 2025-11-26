@@ -15,16 +15,14 @@ import {
   useFetchAllOrdersQuery,
   useUpdateOrderStatusMutation,
 } from "@/redux/api/adminOrderApiSlice";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
 import { HiShoppingBag } from "react-icons/hi2";
 
 const OrderManagement = () => {
   const { data, isLoading } = useFetchAllOrdersQuery();
   const [updateOrderStatus, { isLoading: isUpdating }] =
     useUpdateOrderStatusMutation();
-  const navigate = useNavigate();
 
   const orders = data?.orders || [];
 
@@ -84,18 +82,12 @@ const OrderManagement = () => {
 
       <div className="relative">
         {isUpdating && (
-          <motion.div
-            className="absolute inset-0 bg-gray-100 bg-opacity-50 flex flex-col justify-center items-center z-10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-          >
+          <div className="absolute inset-0 bg-gray-100 bg-opacity-50 flex flex-col justify-center items-center z-10">
             <Spinner color="primary" classNames={{ wrapper: "w-20 h-20" }} />
             <p className="text-gray-700 font-medium text-lg mt-4">
               Updating order status...
             </p>
-          </motion.div>
+          </div>
         )}
 
         {isLoading ? (

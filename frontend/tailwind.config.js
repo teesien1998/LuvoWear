@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+/* eslint-env node */
+// eslint-disable-next-line no-undef
 const { heroui } = require("@heroui/react");
 
 export default {
@@ -36,5 +38,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), heroui()],
+  plugins: [require("tailwindcss-animate"), heroui()], // eslint-disable-line no-undef
 };

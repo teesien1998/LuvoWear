@@ -1,5 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
 
 // Retrieve user info and token from localStorage if available
 const userFromStorage = localStorage.getItem("userInfo")
@@ -30,14 +29,14 @@ const authSlice = createSlice({
       state.user = action.payload;
       localStorage.setItem("userInfo", JSON.stringify(action.payload));
     },
-    logout: (state, action) => {
+    logout: (state) => {
       state.user = null;
       localStorage.removeItem("userInfo");
 
       state.guestId = `guest_${new Date().getTime()}`; // Reset guest ID on log out
       localStorage.setItem("guestId", state.guestId);
     },
-    generateNewGuestId: (state, action) => {
+    generateNewGuestId: (state) => {
       state.guestId = `guest_${new Date().getTime()}`;
       localStorage.setItem("guestId", state.guestId);
     },

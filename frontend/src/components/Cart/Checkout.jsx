@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import PayPalButton from "./PayPalButton";
-import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import { PayPalButtons } from "@paypal/react-paypal-js";
 import { useSelector, useDispatch } from "react-redux";
 import {
   useCreateCheckoutMutation,
@@ -29,7 +29,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { cart, error } = useSelector((state) => state.cart);
+  const { cart } = useSelector((state) => state.cart);
 
   const [createCheckout] = useCreateCheckoutMutation();
   const [payCheckout] = usePayCheckoutMutation();

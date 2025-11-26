@@ -15,10 +15,10 @@ import { useSelector } from "react-redux";
 import { RxCross2 } from "react-icons/rx";
 
 const CartDrawer = () => {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const navigate = useNavigate();
-  const { user, guestId } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
   const { cart } = useSelector((state) => state.cart);
 
   const cartItemCounts =

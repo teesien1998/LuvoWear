@@ -9,6 +9,7 @@ import { useRegisterUserMutation } from "@/redux/api/userApiSlice";
 import { useMergeGuestCartMutation } from "@/redux/api/cartApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setCart } from "@/redux/slices/cartSlice";
+import { toast } from "sonner";
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
@@ -58,7 +59,7 @@ const RegisterPage = () => {
     };
 
     handleRedirect();
-  }, [navigate, user, guestId, mergeGuestCart, redirect]);
+  }, [navigate, user, guestId, mergeGuestCart, redirect, dispatch]);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 

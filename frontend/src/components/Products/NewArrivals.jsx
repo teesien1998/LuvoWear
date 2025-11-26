@@ -4,19 +4,19 @@ import { Link, useNavigate } from "react-router-dom";
 // import { newArrivals } from "@/data/homeProductData";
 import { useFetchNewArrivalsQuery } from "@/redux/api/productApiSlice";
 import { Spinner } from "@heroui/spinner";
-import { motion } from "framer-motion";
 
 const NewArrivals = () => {
   const scrollRef = useRef(null);
   const startXRef = useRef(null);
   const scrollLeftRef = useRef(0);
+  const isScrollbarDragRef = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
   const navigate = useNavigate();
 
-  const { data: newArrivals, isLoading, error } = useFetchNewArrivalsQuery();
+  const { data: newArrivals, isLoading } = useFetchNewArrivalsQuery();
 
   const handleMouseDown = (e) => {
     // Don't interfere with scrollbar dragging
@@ -92,8 +92,9 @@ const NewArrivals = () => {
 
     // 🔥 Cleanup function - removes listener, runs when component unmounts
     return () => {
-      if (scrollRef.current) {
-        scrollRef.current.removeEventListener("scroll", updateScrollButton);
+      const container = scrollRef.current;
+      if (container) {
+        container.removeEventListener("scroll", updateScrollButton);
       }
     };
   }, []);
@@ -148,13 +149,7 @@ const NewArrivals = () => {
 
   return (
     <section id="new-arrivals">
-      <motion.div
-        initial={{ y: 100, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-        viewport={{ once: true }}
-        className="container mx-auto px-6 py-10 relative"
-      >
+      <div className="container mx-auto px-6 py-10 relative">
         <div className="flex space-x-2 items-center mb-10">
           <h2 className="text-3xl font-bold text-nowrap">
             Explore New Arrivals
@@ -201,7 +196,7 @@ const NewArrivals = () => {
         <button
           onClick={() => scroll("left")}
           disabled={!canScrollLeft}
-          className={`p-2 rounded-full border border-gray-300 absolute left-0 top-1/2 ${
+          className={`p-2 rounded-full border border-gray-300 absolute left-0 top-1/2 shadow-md ${
             canScrollLeft
               ? "bg-white text-black hover:bg-gray-100 transition duration-150 block"
               : "bg-gray-200 text-gray-400 hidden"
@@ -212,7 +207,7 @@ const NewArrivals = () => {
         <button
           onClick={() => scroll("right")}
           disabled={!canScrollRight}
-          className={`p-2 rounded-full border border-gray-300 absolute right-0 top-1/2 ${
+          className={`p-2 rounded-full border border-gray-300 absolute right-0 top-1/2 shadow-md ${
             canScrollRight
               ? "bg-white text-black hover:bg-gray-100 transition duration-150 block"
               : "bg-gray-200 text-gray-400 hidden"
@@ -220,7 +215,7 @@ const NewArrivals = () => {
         >
           <FiChevronRight className="text-2xl" />
         </button>
-      </motion.div>
+      </div>
     </section>
   );
 };

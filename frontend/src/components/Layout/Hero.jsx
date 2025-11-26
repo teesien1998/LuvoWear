@@ -31,7 +31,7 @@ const CustomPrevArrow = (props) => {
 };
 
 const CustomNextArrow = (props) => {
-  const { className, onClick } = props;
+  const { onClick } = props;
   return (
     <button
       className="absolute right-10 top-1/2 transform -translate-y-1/2 z-10 p-1 bg-gray-300/40 hover:bg-gray-300/70 focus:ring-2 focus:ring-white transition-all rounded-full"

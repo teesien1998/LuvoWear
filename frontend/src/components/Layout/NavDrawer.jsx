@@ -11,7 +11,7 @@ import {
 import { HiBars3BottomRight } from "react-icons/hi2";
 
 const NavDrawer = () => {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [searchParams] = useSearchParams();
   const gender = searchParams.get("gender");
 

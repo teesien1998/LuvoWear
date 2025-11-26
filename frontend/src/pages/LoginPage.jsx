@@ -53,7 +53,7 @@ const LoginPage = () => {
     };
 
     handleRedirect();
-  }, [navigate, user, guestId, mergeGuestCart, redirect]);
+  }, [navigate, user, guestId, mergeGuestCart, redirect, dispatch]);
 
   // Toggle Password Visibility
   const toggleVisibility = () => setIsVisible(!isVisible);

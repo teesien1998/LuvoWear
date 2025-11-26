@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setCart } from "@/redux/slices/cartSlice";
@@ -6,9 +6,24 @@ import { useAddToCartMutation } from "@/redux/api/cartApiSlice";
 import { Chip, Tooltip, Spinner } from "@heroui/react";
 import { FaCircleCheck, FaFire } from "react-icons/fa6"; // Changed from FaTrophy to FaFire
 import { IoIosWarning } from "react-icons/io";
+import {
+  FaChevronUp,
+  FaChevronDown,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
 import { Rating } from "@mui/material";
 
+// Swiper imports
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Thumbs, FreeMode } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/thumbs";
+import "swiper/css/free-mode";
+
 const ProductContent = ({ selectedProduct }) => {
+  // eslint-disable-next-line no-unused-vars
   const [mainImage, setMainImage] = useState(
     selectedProduct?.images?.[0] || null
   );
@@ -18,6 +33,13 @@ const ProductContent = ({ selectedProduct }) => {
   const [isHovering, setIsHovering] = useState(false);
   const [lensPos, setLensPos] = useState({ x: 0, y: 0 }); // px for circle lens
   const [zoomPos, setZoomPos] = useState({ x: 0, y: 0 }); // % for circle background zoom
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  // Refs for custom navigation
+  const mainSwiperRef = useRef(null);
+  const thumbSwiperRef = useRef(null);
+  const mobileThumbSwiperRef = useRef(null);
 
   const stock = useMemo(() => selectedProduct?.countInStock, [selectedProduct]);
 
@@ -26,7 +48,7 @@ const ProductContent = ({ selectedProduct }) => {
 
   const dispatch = useDispatch();
   const { user, guestId } = useSelector((state) => state.auth);
-  const [addToCart, { isLoading, error }] = useAddToCartMutation();
+  const [addToCart, { isLoading }] = useAddToCartMutation();
 
   // console.log(selectedProduct);
 
@@ -35,6 +57,17 @@ const ProductContent = ({ selectedProduct }) => {
     setSelectedSize("S");
     setSelectedColor(null);
     setQuantity(1);
+    setActiveIndex(0);
+    // Reset swiper to first slide when product changes
+    if (mainSwiperRef.current?.swiper) {
+      mainSwiperRef.current.swiper.slideTo(0);
+    }
+    if (thumbSwiperRef.current?.swiper) {
+      thumbSwiperRef.current.swiper.slideTo(0);
+    }
+    if (mobileThumbSwiperRef.current?.swiper) {
+      mobileThumbSwiperRef.current.swiper.slideTo(0);
+    }
   }, [selectedProduct]);
 
   const increment = () => {
@@ -98,8 +131,6 @@ const ProductContent = ({ selectedProduct }) => {
       lensRadius, // Min: 100px from top edge
       Math.min(positionY, height - lensRadius) // Max: height - 100px from top edge
     );
-    console.log(clampedX, clampedY);
-    console.log(positionX, positionY);
 
     // Where to place the lens (px) - this will be centered via transform
     setLensPos({ x: clampedX, y: clampedY });
@@ -114,54 +145,144 @@ const ProductContent = ({ selectedProduct }) => {
   return (
     <div className="max-w-6xl mx-auto px-6">
       <div className="flex flex-col md:flex-row items-start justify-center transition-opacity ease-in duration-500 opacity-100">
-        {/* Left Thumbnails */}
-        <div className="hidden md:flex flex-col overscroll-y-auto space-y-4 mr-6">
-          {selectedProduct?.images?.map((image, index) => (
-            <img
-              key={index}
-              src={image?.url}
-              alt={image?.altText || `Thumbnail ${index}`}
-              className={`w-24 h-auto object-cover rounded-lg cursor-pointer border ${
-                mainImage === image ? "border-2 border-custom" : ""
-              } `}
-              onClick={() => setMainImage(image)}
+        {/* Left Thumbnails - Desktop (Vertical) */}
+        <div className="hidden md:flex flex-col items-center mr-6">
+          {/* Up Navigation Button */}
+          <button
+            onClick={() => thumbSwiperRef.current?.swiper?.slidePrev()}
+            className="mb-2 p-2 rounded-full bg-white shadow-md hover:bg-gray-100 transition-colors border border-gray-200 hover:border-custom group"
+            aria-label="Previous thumbnail"
+          >
+            <FaChevronUp
+              className="text-gray-500 group-hover:text-custom transition-colors"
+              size={14}
             />
-          ))}
+          </button>
+
+          <div className="h-[400px] w-24">
+            <Swiper
+              ref={thumbSwiperRef}
+              onSwiper={setThumbsSwiper}
+              direction="vertical"
+              spaceBetween={12}
+              slidesPerView="auto"
+              freeMode={true}
+              watchSlidesProgress={true}
+              modules={[FreeMode, Navigation, Thumbs]}
+              className="h-full w-full thumb-swiper"
+            >
+              {selectedProduct?.images?.map((image, index) => (
+                <SwiperSlide key={index} className="!h-auto">
+                  <img
+                    src={image?.url}
+                    alt={image?.altText || `Thumbnail ${index}`}
+                    className={`w-24 h-auto aspect-[4/5] object-cover rounded-lg cursor-pointer border-2 transition-all duration-300 ${
+                      activeIndex === index
+                        ? "border-custom shadow-md opacity-100"
+                        : "border-transparent hover:border-gray-300 opacity-60 hover:opacity-100"
+                    }`}
+                    onClick={() => {
+                      setMainImage(image);
+                      setActiveIndex(index);
+                      mainSwiperRef.current?.swiper?.slideTo(index);
+                    }}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+
+          {/* Down Navigation Button */}
+          <button
+            onClick={() => thumbSwiperRef.current?.swiper?.slideNext()}
+            className="mt-2 p-2 rounded-full bg-white shadow-md hover:bg-gray-100 transition-colors border border-gray-200 hover:border-custom group"
+            aria-label="Next thumbnail"
+          >
+            <FaChevronDown
+              className="text-gray-500 group-hover:text-custom transition-colors"
+              size={14}
+            />
+          </button>
         </div>
 
-        {/* Main Image */}
-        <div
-          className="md:w-[50%] mb-4 relative overflow-hidden"
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
-          onMouseMove={handleMouseMove}
-        >
-          <img
-            src={mainImage?.url}
-            alt={mainImage?.altText}
-            className="w-full aspect-[4/5.5] object-cover rounded-lg border"
-          />
-          {isHovering && (
-            <div
-              className="absolute pointer-events-none z-10 rounded-full"
-              style={{
-                width: "200px",
-                height: "200px",
-                left: `${lensPos.x}px`,
-                top: `${lensPos.y}px`,
-                backgroundImage: `url(${mainImage?.url})`,
-                backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
-                backgroundSize: "300%",
-                backgroundRepeat: "no-repeat",
-                transform: "translate(-50%, -50%)",
-                boxShadow:
-                  "0 0 0 4px rgba(255, 255, 255, 0.85), 0 0 7px 7px rgba(0, 0, 0, 0.25), inset 0 0 40px 2px rgba(0, 0, 0, 0.25)",
-              }}
+        {/* Main Image Carousel */}
+        <div className="md:w-[50%] mb-4 relative group">
+          {/* Left Navigation Button */}
+          <button
+            onClick={() => mainSwiperRef.current?.swiper?.slidePrev()}
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 px-2.5 py-4 rounded-md bg-gray-300/40 hover:bg-gray-300/70 transition-all duration-400 border border-gray-200 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
+            aria-label="Previous image"
+          >
+            <FaChevronLeft className="text-white transition-colors" size={25} />
+          </button>
+
+          <Swiper
+            ref={mainSwiperRef}
+            spaceBetween={10}
+            speed={600}
+            thumbs={{
+              swiper:
+                thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
+            }}
+            modules={[FreeMode, Navigation, Thumbs]}
+            onSlideChange={(swiper) => {
+              setActiveIndex(swiper.activeIndex);
+              setMainImage(selectedProduct?.images?.[swiper.activeIndex]);
+            }}
+            className="select-none rounded-lg"
+          >
+            {selectedProduct?.images?.map((image, index) => (
+              <SwiperSlide key={index}>
+                <div
+                  className="relative overflow-hidden"
+                  onMouseEnter={() => setIsHovering(true)}
+                  onMouseLeave={() => setIsHovering(false)}
+                  onMouseMove={handleMouseMove}
+                >
+                  <img
+                    src={image?.url}
+                    alt={image?.altText || `Product image ${index + 1}`}
+                    className="w-full aspect-[4/5.5] object-cover rounded-lg border cursor-grab active:cursor-grabbing"
+                    draggable={false}
+                  />
+                  {isHovering && activeIndex === index && (
+                    <div
+                      className="absolute pointer-events-none z-10 rounded-full"
+                      style={{
+                        width: "200px",
+                        height: "200px",
+                        left: `${lensPos.x}px`,
+                        top: `${lensPos.y}px`,
+                        backgroundImage: `url(${image?.url})`,
+                        backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
+                        backgroundSize: "300%",
+                        backgroundRepeat: "no-repeat",
+                        transform: "translate(-50%, -50%)",
+                        boxShadow:
+                          "0 0 0 4px rgba(255, 255, 255, 0.85), 0 0 7px 7px rgba(0, 0, 0, 0.25), inset 0 0 40px 2px rgba(0, 0, 0, 0.25)",
+                      }}
+                    />
+                  )}
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+
+          {/* Right Navigation Button */}
+          <button
+            onClick={() => mainSwiperRef.current?.swiper?.slideNext()}
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 px-2.5 py-4 rounded-md bg-gray-300/40 hover:bg-gray-300/70 transition-all duration-400 border border-gray-200 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
+            aria-label="Next image"
+          >
+            <FaChevronRight
+              className="text-white transition-colors"
+              size={25}
             />
-          )}
+          </button>
+
           {/* HOT Badge */}
           {selectedProduct.totalSold >= HOT_PRODUCT_THRESHOLD && (
-            <div className="absolute top-3 left-3">
+            <div className="absolute top-3 left-3 z-10">
               <Chip
                 color="danger"
                 startContent={<FaFire size={14} className="ml-1" />}
@@ -175,19 +296,57 @@ const ProductContent = ({ selectedProduct }) => {
           )}
         </div>
 
-        {/* Mobile Thumbnail */}
-        <div className="md:hidden flex overscroll-x-auto space-x-4 mb-4">
-          {selectedProduct?.images?.map((image, index) => (
-            <img
-              key={index}
-              src={image?.url}
-              alt={image?.altText || `Thumbnail ${index}`}
-              className={`w-24 h-auto object-cover rounded-lg cursor-pointer border ${
-                mainImage === image ? "border-2 border-custom" : ""
-              } `}
-              onClick={() => setMainImage(image)}
-            />
-          ))}
+        {/* Mobile Thumbnail Carousel (Horizontal) */}
+        <div className="md:hidden w-full mb-4 relative">
+          {/* Left Navigation Button - Mobile */}
+          <button
+            onClick={() => mobileThumbSwiperRef.current?.swiper?.slidePrev()}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-1.5 rounded-full bg-white/90 shadow-md hover:bg-white transition-all border border-gray-200"
+            aria-label="Previous thumbnail"
+          >
+            <FaChevronLeft className="text-gray-600" size={12} />
+          </button>
+
+          <div className="px-8">
+            <Swiper
+              ref={mobileThumbSwiperRef}
+              direction="horizontal"
+              spaceBetween={12}
+              slidesPerView="auto"
+              freeMode={true}
+              watchSlidesProgress={true}
+              modules={[FreeMode, Navigation, Thumbs]}
+              className="mobile-thumb-swiper"
+            >
+              {selectedProduct?.images?.map((image, index) => (
+                <SwiperSlide key={index}>
+                  <img
+                    src={image?.url}
+                    alt={image?.altText || `Thumbnail ${index}`}
+                    className={`w-full h-auto aspect-square object-cover rounded-lg cursor-pointer border-2 transition-all duration-300 ${
+                      activeIndex === index
+                        ? "border-custom shadow-md opacity-100"
+                        : "border-transparent hover:border-gray-300 opacity-60 hover:opacity-100"
+                    }`}
+                    onClick={() => {
+                      setMainImage(image);
+                      setActiveIndex(index);
+                      mainSwiperRef.current?.swiper?.slideTo(index);
+                    }}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+
+          {/* Right Navigation Button - Mobile */}
+          <button
+            onClick={() => mobileThumbSwiperRef.current?.swiper?.slideNext()}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-1.5 rounded-full bg-white/90 shadow-md hover:bg-white transition-all border border-gray-200"
+            aria-label="Next thumbnail"
+          >
+            <FaChevronRight className="text-gray-600" size={12} />
+          </button>
         </div>
 
         {/* Right Side */}

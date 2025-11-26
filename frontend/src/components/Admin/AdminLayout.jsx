@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { FaBars } from "react-icons/fa";
 import logoicon from "@/assets/images/luvowearicon.png"; // ✅ Correct import
 import { Link } from "react-router-dom";
@@ -7,8 +6,6 @@ import { Outlet } from "react-router-dom";
 import AdminSideBar from "./AdminSideBar";
 
 const AdminLayout = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
   return (
     <>
       <div className="border-b">

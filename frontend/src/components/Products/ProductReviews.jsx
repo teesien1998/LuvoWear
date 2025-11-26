@@ -52,7 +52,6 @@ const ProductReviews = ({ product }) => {
       toast.success("Review submitted successfully!");
     } catch (error) {
       toast.error(error?.data?.message || "Failed to submit review");
-    } finally {
     }
   };
 
@@ -62,13 +61,6 @@ const ProductReviews = ({ product }) => {
       month: "long",
       day: "numeric",
     });
-  };
-
-  const handleReviewSubmit = async (reviewData) => {
-    return await createProductReview({
-      productId: id,
-      ...reviewData,
-    }).unwrap();
   };
 
   return (

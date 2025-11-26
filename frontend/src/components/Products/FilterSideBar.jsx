@@ -10,8 +10,6 @@ import {
 } from "@/constants/collectionProductData";
 import { Slider, Tooltip } from "@heroui/react";
 import { FiRefreshCw } from "react-icons/fi";
-import { useDispatch } from "react-redux";
-import { setFiltersRedux, clearFiltersRedux } from "@/redux/slices/filterSlice";
 
 const FilterSideBar = ({ defaultGender }) => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -187,7 +185,10 @@ const FilterSideBar = ({ defaultGender }) => {
               onChange={handleFilterChange}
               className="mr-2 h-4 w-4 text-green-500 focus:ring-green-400 border-green-800"
             />
-            <label htmlFor={category} className="text-gray-600 text-sm sm:text-base">
+            <label
+              htmlFor={category}
+              className="text-gray-600 text-sm sm:text-base"
+            >
               {category}
             </label>
           </div>
@@ -210,7 +211,10 @@ const FilterSideBar = ({ defaultGender }) => {
               onChange={handleFilterChange}
               className="mr-2 h-4 w-4"
             />
-            <label htmlFor={gender} className="text-gray-600 text-sm sm:text-base">
+            <label
+              htmlFor={gender}
+              className="text-gray-600 text-sm sm:text-base"
+            >
               {gender}
             </label>
           </div>
@@ -258,7 +262,10 @@ const FilterSideBar = ({ defaultGender }) => {
               checked={filters.size.includes(size)}
               className="mr-2 h-4 w-4 accent-red-500"
             />
-            <label htmlFor={size} className="text-gray-600 text-sm sm:text-base">
+            <label
+              htmlFor={size}
+              className="text-gray-600 text-sm sm:text-base"
+            >
               {size}
             </label>
           </div>
@@ -281,7 +288,10 @@ const FilterSideBar = ({ defaultGender }) => {
               checked={filters.material.includes(material)}
               className="mr-2 h-4 w-4 accent-red-500"
             />
-            <label htmlFor={material} className="text-gray-600 text-sm sm:text-base">
+            <label
+              htmlFor={material}
+              className="text-gray-600 text-sm sm:text-base"
+            >
               {material}
             </label>
           </div>
@@ -304,7 +314,10 @@ const FilterSideBar = ({ defaultGender }) => {
               checked={filters.brand.includes(brand)}
               className="mr-2 h-4 w-4 accent-red-500"
             />
-            <label htmlFor={brand} className="text-gray-600 text-sm sm:text-base">
+            <label
+              htmlFor={brand}
+              className="text-gray-600 text-sm sm:text-base"
+            >
               {brand}
             </label>
           </div>

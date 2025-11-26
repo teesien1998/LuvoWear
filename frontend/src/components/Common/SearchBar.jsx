@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion"; // eslint-disable-line no-unused-vars
 import { FiSearch } from "react-icons/fi";
 import { HiMiniXMark } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";

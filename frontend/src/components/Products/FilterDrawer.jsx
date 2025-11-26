@@ -11,7 +11,7 @@ import FilterSideBar from "@/components/Products/FilterSideBar";
 import { FaFilter } from "react-icons/fa";
 
 const FilterDrawer = () => {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
@@ -54,7 +54,7 @@ const FilterDrawer = () => {
         }}
       >
         <DrawerContent>
-          {(onClose) => (
+          {() => (
             <div>
               <FilterSideBar />
             </div>

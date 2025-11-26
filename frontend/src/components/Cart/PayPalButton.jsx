@@ -1,4 +1,4 @@
-import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import { PayPalButtons } from "@paypal/react-paypal-js";
 
 const PayPalButton = ({ amount, onSuccess, onError }) => {
   return (

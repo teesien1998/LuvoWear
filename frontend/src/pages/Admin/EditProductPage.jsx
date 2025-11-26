@@ -7,7 +7,6 @@ import {
   Input,
   Textarea,
   Button,
-  image,
 } from "@heroui/react";
 import { HexColorPicker, HexColorInput } from "react-colorful";
 import { useParams, useNavigate } from "react-router-dom";
@@ -683,8 +682,7 @@ const EditProductPage = () => {
                 ></span>
                 {color.name}
                 <button
-                  onClick={(e) => {
-                    // e.preventDefault();
+                  onClick={() => {
                     setProductData((prev) => ({
                       ...prev,
                       colors: prev.colors.filter(

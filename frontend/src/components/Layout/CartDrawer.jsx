@@ -113,7 +113,7 @@ const CartDrawer = () => {
                   <div className="bg-white p-6 border-t mt-auto">
                     <div className="flex justify-between mb-4 font-semibold">
                       <p>Total</p>
-                      <p>${cart.totalPrice.toLocaleString()}</p>
+                      <p>${(cart?.totalPrice ?? 0).toLocaleString()}</p>
                     </div>
                     <button
                       onClick={handleCheckout}

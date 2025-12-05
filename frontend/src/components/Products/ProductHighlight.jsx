@@ -4,7 +4,7 @@ import { Spinner } from "@heroui/spinner";
 
 const ProductHighlight = () => {
   const {
-    data: selectedProduct = [],
+    data: selectedProduct,
     isLoading,
   } = useFetchBestSellerQuery();
 
@@ -21,8 +21,12 @@ const ProductHighlight = () => {
         <div className="flex justify-center items-center h-40">
           <Spinner color="primary" classNames={{ wrapper: "w-20 h-20" }} />
         </div>
-      ) : (
+      ) : selectedProduct ? (
         <ProductContent selectedProduct={selectedProduct} />
+      ) : (
+        <div className="flex justify-center items-center h-40">
+          <p className="text-gray-500">No product available</p>
+        </div>
       )}
     </section>
   );

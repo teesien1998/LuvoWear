@@ -124,7 +124,7 @@ const CartContents = () => {
           </div>
           <div className="flex flex-col items-start font-semibold">
             <span className="whitespace-nowrap">
-              ${product.price.toLocaleString()}
+              ${(product?.price ?? 0).toLocaleString()}
             </span>
             <button
               onClick={() =>

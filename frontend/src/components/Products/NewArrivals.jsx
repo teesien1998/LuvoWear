@@ -171,27 +171,35 @@ const NewArrivals = () => {
           }`}
           onMouseDown={handleMouseDown}
         >
-          {newArrivals?.map((product) => (
-            <div
-              key={product._id}
-              className="min-w-[55%] md:min-w-[35%] lg:min-w-[25%] relative hover:cursor-pointer"
-              draggable="false"
-              onClick={() => handleRedirect(product._id)}
-            >
-              <img
-                src={product.images[0]?.url}
-                alt={product.name}
-                className="w-full aspect-[4/4.7] object-cover rounded-lg"
+          {newArrivals && newArrivals.length > 0 ? (
+            newArrivals.map((product) => (
+              <div
+                key={product._id}
+                className="min-w-[55%] md:min-w-[35%] lg:min-w-[25%] relative hover:cursor-pointer"
                 draggable="false"
-              />
-              <div className="absolute bottom-0 left-0 right-0 bg-opacity-50 bg-black text-white p-4 rounded-b-lg">
-                <div>
-                  <h3 className="font-medium">{product.name}</h3>
-                  <p className="mt-1">{`$${product.price.toLocaleString()}`}</p>
+                onClick={() => handleRedirect(product._id)}
+              >
+                <img
+                  src={product.images[0]?.url}
+                  alt={product.name}
+                  className="w-full aspect-[4/4.7] object-cover rounded-lg"
+                  draggable="false"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-opacity-50 bg-black text-white p-4 rounded-b-lg">
+                  <div>
+                    <h3 className="font-medium">{product.name}</h3>
+                    <p className="mt-1">{`$${(
+                      product?.price ?? 0
+                    ).toLocaleString()}`}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-center text-gray-500 w-full">
+              No new arrivals available
+            </p>
+          )}
         </div>
         <button
           onClick={() => scroll("left")}

@@ -64,7 +64,7 @@ const AdminHomePage = () => {
           <div>
             <h2 className="text-lg font-medium text-gray-500">Total Revenue</h2>
             <p className="text-2xl font-semibold text-gray-800">
-              ${roundToTwo(orderData.totalSales)}
+              ${roundToTwo(orderData?.totalSales || 0)}
             </p>
           </div>
         </div>
@@ -76,7 +76,7 @@ const AdminHomePage = () => {
           <div>
             <h2 className="text-lg font-medium text-gray-500">Total Orders</h2>
             <p className="text-2xl font-semibold text-gray-800">
-              {orderData.totalOrders}
+              {orderData?.totalOrders || 0}
             </p>
             <Link
               to="/admin/orders"
@@ -96,7 +96,7 @@ const AdminHomePage = () => {
               Total Products
             </h2>
             <p className="text-2xl font-semibold text-gray-800">
-              {productData.length}
+              {productData?.length || 0}
             </p>
             <Link
               to="/admin/products"
@@ -137,7 +137,7 @@ const AdminHomePage = () => {
                       {order.user.name}
                     </TableCell>
                     <TableCell>
-                      ${order.totalPrice.toFixed(2).toLocaleString()}
+                      ${(order?.totalPrice ?? 0).toFixed(2).toLocaleString()}
                     </TableCell>
                     <TableCell>
                       <span

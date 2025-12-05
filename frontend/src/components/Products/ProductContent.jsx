@@ -404,11 +404,11 @@ const ProductContent = ({ selectedProduct }) => {
           {selectedProduct.discountPrice != null ? (
             <>
               <p className="text-base md:text-lg text-gray-500 line-through">
-                {`$${selectedProduct?.price?.toLocaleString()}`}
+                {`$${(selectedProduct?.price ?? 0).toLocaleString()}`}
               </p>
               <div className="flex items-center justify-between mb-6">
                 <p className="text-2xl font-semibold">
-                  {`$${selectedProduct?.discountPrice?.toLocaleString()}`}
+                  {`$${(selectedProduct?.discountPrice ?? 0).toLocaleString()}`}
                 </p>
                 <div className="flex items-center gap-2">
                   <Rating
@@ -431,7 +431,7 @@ const ProductContent = ({ selectedProduct }) => {
           ) : (
             <div className="flex items-center justify-between mb-6">
               <p className="text-2xl font-semibold">
-                {`$${selectedProduct?.price.toLocaleString()}`}
+                {`$${(selectedProduct?.price ?? 0).toLocaleString()}`}
               </p>
               <div className="flex items-center gap-2">
                 <Rating

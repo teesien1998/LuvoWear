@@ -15,40 +15,46 @@ const ProductTopCollections = ({ products, gender }) => {
 
         {/* Updated Grid Layout */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 justify-items-center gap-x-10 gap-y-10 2xl:gap-x-0">
-          {products?.map((product, index) => (
-            <Link
-              key={index}
-              to={`/product/${product._id}`}
-              className="w-full max-w-[320px]"
-            >
-              <div className="mb-3 overflow-hidden">
-                <img
-                  src={product.images[0].url}
-                  alt={product.images[0].altText || product.name}
-                  className="w-full aspect-[4/5.5] object-cover hover:scale-110 transition"
-                />
-              </div>
-              <h3 className="mb-2">{product.name}</h3>
+          {products && products.length > 0 ? (
+            products.map((product, index) => (
+              <Link
+                key={index}
+                to={`/product/${product._id}`}
+                className="w-full max-w-[320px]"
+              >
+                <div className="mb-3 overflow-hidden">
+                  <img
+                    src={product.images[0].url}
+                    alt={product.images[0].altText || product.name}
+                    className="w-full aspect-[4/5.5] object-cover hover:scale-110 transition"
+                  />
+                </div>
+                <h3 className="mb-2">{product.name}</h3>
 
-              {/* MUI Rating Component */}
-              <div className="mb-2 flex items-center gap-1">
-                <Rating
-                  name="product-rating"
-                  value={product.rating || 0}
-                  precision={0.5}
-                  size="small"
-                  readOnly
-                />
-                <span className="text-sm text-gray-600 font-medium">
-                  ({product.rating ? product.rating.toFixed(1) : "0.0"})
-                </span>
-              </div>
+                {/* MUI Rating Component */}
+                <div className="mb-2 flex items-center gap-1">
+                  <Rating
+                    name="product-rating"
+                    value={product.rating || 0}
+                    precision={0.5}
+                    size="small"
+                    readOnly
+                  />
+                  <span className="text-sm text-gray-600 font-medium">
+                    ({product.rating ? product.rating.toFixed(1) : "0.0"})
+                  </span>
+                </div>
 
-              <p className="tracking-tighter font-semibold">
-                ${product.price.toLocaleString()}
-              </p>
-            </Link>
-          ))}
+                <p className="tracking-tighter font-semibold">
+                  ${(product?.price ?? 0).toLocaleString()}
+                </p>
+              </Link>
+            ))
+          ) : (
+            <p className="col-span-full text-center text-gray-500">
+              No products found
+            </p>
+          )}
         </div>
       </div>
     </section>

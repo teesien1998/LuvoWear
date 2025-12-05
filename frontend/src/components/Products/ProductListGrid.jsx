@@ -52,7 +52,9 @@ const ProductListGrid = ({ products }) => {
           </div>
 
           {/* Product Price */}
-          <p className="font-semibold">${product.price.toLocaleString()}</p>
+          <p className="font-semibold">
+            ${(product?.price ?? 0).toLocaleString()}
+          </p>
         </Link>
       ))}
     </div>
